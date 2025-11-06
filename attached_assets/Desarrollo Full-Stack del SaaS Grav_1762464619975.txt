@@ -1,0 +1,770 @@
+Desarrollo Full-Stack del SaaS "Gravi"
+Rol: Actúa como un desarrollador Full-stack senior, arquitecto de software experto en ux/ui y con experiencia en la construcción de aplicaciones contables SaaS multi-tenancia.
+
+Contexto Requerido:
+
+Estamos construyendo un SaaS llamado "Gravi" para la administración de copropiedades.
+El backend será en Node.js con NestJS.
+Usaremos Prisma como ORM para interactuar con una base de datos MySQL.
+El principio fundamental es la multi-tenancia usando una columna suscriptor_id.
+Los módulos o paginas principales serán: Autenticación, Suscriptores, Unidades, Propietarios (Terceros), Contabilidad ,Facturación, tesoreria, nomina, presupuestos, activos fijos, información exógena y gestión de copropiedad.
+
+Un pilar fundamental de este proyecto es el aislamiento de datos (multi-tenancia). Cada copropiedad (suscriptor) debe operar en su propio espacio lógico, sin poder ver ni acceder a la información de otros suscriptores.
+
+Paso 1: Configuración del Proyecto y Arquitectura del Backend
+Debes seguir estas reglas y decisiones de diseño sin desviarte:
+
+Modelo de Multi-tenancia: Implementa el modelo de Base de Datos Compartida, Esquema Compartido. El aislamiento se logra mediante una columna suscriptor_id en casi todas las tablas. CADA consulta a la base de datos que involucre datos de suscriptor DEBE filtrar por suscriptor_id para garantizar la seguridad.
+Estrategia de IDs: Utiliza UUIDs (v4) para todas las claves primarias. En la base de datos, almacénalos como BINARY(16) para optimizar el rendimiento. La generación del UUID debe ser responsabilidad de la aplicación (backend), no de la base de datos.
+
+Stack Tecnológico Recomendado:
+Backend: Node.js y  API RESTful,.
+Frontend: React con Next.js. 
+Base de Datos: MySQL 8.0+ (o compatible).
+Autenticación: Integra un servicio como Auth0 o Supabase Auth. No construyas un sistema de login desde cero.
+ORM: Utiliza TypeORM para interactuar con la base de datos. Te ayudará a manejar los tipos BINARY(16) y las relaciones de forma más sencilla.
+Idioma: Español (conceptos, nombres de variables, tablas, columnas)
+
+Tarea Específica:
+
+Diseña y presenta una estructura de carpetas y archivos clara y escalable para el proyecto. Debe incluir los módulos mencionados en el contexto.
+Para cada módulo, explica brevemente su responsabilidad y qué archivos típicos contendría (ej: module.ts, service.ts, controller.ts).
+Luego define el Esquema de Base de Datos ,nombre de la base de datos es gravi. A continuación, te proporcionaré el script CREATE TABLE completo de la base de datos.
+Tu única tarea es generar el contenido completo del archivo "schema"
+Asegúrate de que:
+Cada tabla SQL se convierta en un model del ORM.
+Los campos BINARY(16) se definan como Bytes @db.Binary(16).
+Todas las claves foráneas se traduzcan a relaciones con @relation y @map.
+Los nombres de las tablas y columnas en el ORM coincidan con los de la base de datos usando @@map y @map donde sea necesario.
+Se incluya el bloque datasource para la conexión a MySQL.
+Salida Esperada:
+
+El código completo y listo para usar del archivo "schema".
+-- Crear la base de datos si no existe
+CREATE DATABASE IF NOT EXISTS `gravi` 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- Usar la base de datos recién creada
+USE `gravi`;
+
+-- =====================================================================
+-- SECCIÓN 1: TABLAS PRINCIPALES Y DE GESTIÓN DE SUSCRIPTORES
+-- =====================================================================
+
+-- Tabla de Suscriptores (Copropiedades)
+CREATE TABLE `suscriptores` (
+    `id` BINARY(16) PRIMARY KEY,
+    `nombre` VARCHAR(100) NOT NULL,
+    `nit` VARCHAR(20) NOT NULL UNIQUE,
+    `subdominio` VARCHAR(50) NULL UNIQUE,
+    `email_contacto` VARCHAR(255) NULL,
+    `direccion` VARCHAR(255) NULL,
+    `telefono` VARCHAR(50) NULL,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_suscriptores_nit` (`nit`),
+    INDEX `idx_suscriptores_subdominio` (`subdominio`)
+) ENGINE=InnoDB COMMENT='Tabla principal de clientes (copropiedades) del SaaS';
+
+-- Tabla de Roles
+CREATE TABLE `roles` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(50) NOT NULL,
+    `descripcion` TEXT NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_roles_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Roles de usuario por suscriptor';
+
+-- Tabla de Usuarios
+CREATE TABLE `usuarios` (
+    `id` BINARY(16) PRIMARY KEY,
+    `nombre` VARCHAR(100) NOT NULL,
+    `apellido` VARCHAR(100) NULL,
+    `email` VARCHAR(255) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `telefono` VARCHAR(50) NULL,
+    `rol_id` BINARY(16) NULL,
+    `suscriptor_id` BINARY(16) NULL,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `ultimo_login` TIMESTAMP NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`rol_id`) REFERENCES `roles`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_usuarios_email` (`email`),
+    INDEX `idx_usuarios_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Usuarios del sistema y de los suscriptores';
+
+-- Tabla de Terceros
+CREATE TABLE `terceros` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `tipo_persona` ENUM('natural', 'juridica') NOT NULL,
+    `tipo_identificacion` VARCHAR(50) NOT NULL,
+    `numero_identificacion` VARCHAR(50) NOT NULL,
+    `nombre_completo` VARCHAR(255) NULL,
+    `razon_social` VARCHAR(255) NULL,
+    `direccion` VARCHAR(255) NULL,
+    `email` VARCHAR(255) NULL,
+    `telefono` VARCHAR(50) NULL,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uk_terceros_identificacion` (`suscriptor_id`, `numero_identificacion`),
+    INDEX `idx_terceros_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Proveedores, propietarios y otros terceros por suscriptor';
+
+-- =====================================================================
+-- SECCIÓN 2: TABLAS DE CONFIGURACIÓN Y ESTRUCTURA DEL SUSCRIPTOR
+-- =====================================================================
+
+-- Tabla de Unidades
+CREATE TABLE `unidades` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `codigo_unidad` VARCHAR(30) NOT NULL,
+    `tipo_unidad` VARCHAR(50) NULL,
+    `propietario_id` BINARY(16) NULL,
+    `inquilino_id` BINARY(16) NULL,
+    `area` DECIMAL(10, 2) NULL,
+    `coeficiente` DECIMAL(5, 4) NULL,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`propietario_id`) REFERENCES `terceros`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`inquilino_id`) REFERENCES `terceros`(`id`) ON DELETE SET NULL,
+    UNIQUE KEY `uk_unidades_codigo` (`suscriptor_id`, `codigo_unidad`),
+    INDEX `idx_unidades_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Unidades inmobiliarias de cada copropiedad';
+
+-- Tabla de Plan de Cuentas Contable
+CREATE TABLE `plan_cuentas` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `codigo` VARCHAR(20) NOT NULL,
+    `nombre` VARCHAR(255) NOT NULL,
+    `tipo` ENUM('activo', 'pasivo', 'patrimonio', 'ingreso', 'gasto', 'costo', 'orden') NOT NULL,
+    `nivel` INT NOT NULL DEFAULT 1,
+    `padre_id` BINARY(16) NULL,
+    `es_debito` TINYINT(1) NULL,
+    `registra_tercero` TINYINT(1) NOT NULL DEFAULT 0,
+    `requiere_centro_costo` TINYINT(1) NOT NULL DEFAULT 0,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`padre_id`) REFERENCES `plan_cuentas`(`id`) ON DELETE SET NULL,
+    UNIQUE KEY `uk_plan_cuentas_codigo` (`suscriptor_id`, `codigo`),
+    INDEX `idx_plan_cuentas_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Plan de cuentas contables por suscriptor';
+
+-- Tabla de Conceptos Exogena (Definiciones de formatos DIAN)
+CREATE TABLE `conceptos_exogena` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `codigo` VARCHAR(20) NOT NULL,
+    `descripcion` VARCHAR(255) NOT NULL,
+    `formato` VARCHAR(50) NULL,
+    `tipo` VARCHAR(50) NULL,
+    `estado` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_conceptos_exogena_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Definiciones para reportes de información exogena';
+
+-- Tabla de Relación Plan de Cuentas - Exogena
+CREATE TABLE `plan_cuentas_exogena` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `cuenta_id` BINARY(16) NOT NULL,
+    `exogena_id` BINARY(16) NOT NULL,
+    `formato` VARCHAR(50) NULL,
+    `observaciones` TEXT NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`cuenta_id`) REFERENCES `plan_cuentas`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`exogena_id`) REFERENCES `conceptos_exogena`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uk_plan_cuentas_exogena` (`suscriptor_id`, `cuenta_id`, `exogena_id`)
+) ENGINE=InnoDB COMMENT='Relación entre cuentas y formatos exogena';
+
+-- Tabla de Centros de Costo
+CREATE TABLE `centros_costo` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(100) NOT NULL,
+    `descripcion` TEXT NULL,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uk_centros_costo_nombre` (`suscriptor_id`, `nombre`),
+    INDEX `idx_centros_costo_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Centros de costo para distribuir gastos';
+
+-- Tabla de Partidas Presupuestales
+CREATE TABLE `partidas_presupuestales` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(100) NOT NULL,
+    `tipo` VARCHAR(50) NULL,
+    `monto_aprobado` DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    `saldo` DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    `estado` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_partidas_presupuestales_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Partidas para control presupuestal';
+
+-- Tabla de Períodos Contables
+CREATE TABLE `periodos_contables` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(100) NOT NULL,
+    `ano` INT NOT NULL,
+    `mes` INT NOT NULL,
+    `fecha_inicio` DATE NOT NULL,
+    `fecha_fin` DATE NOT NULL,
+    `estado` ENUM('abierto', 'cerrado', 'bloqueado') NOT NULL DEFAULT 'abierto',
+    `fecha_cierre` TIMESTAMP NULL,
+    `usuario_cierre_id` BINARY(16) NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`usuario_cierre_id`) REFERENCES `usuarios`(`id`) ON DELETE SET NULL,
+    UNIQUE KEY `uk_periodos_ano_mes` (`suscriptor_id`, `ano`, `mes`),
+    INDEX `idx_periodos_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Períodos fiscales (mensuales) por suscriptor';
+
+-- =====================================================================
+-- SECCIÓN 3: TABLAS DE CONFIGURACIÓN DE TRANSACCIONES Y PLANTILLAS
+-- =====================================================================
+
+-- Tabla de Tipos de Comprobante
+CREATE TABLE `tipos_comprobantes` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(100) NOT NULL,
+    `descripcion` VARCHAR(255) NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_tipos_comprobantes_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Tipos de comprobantes contables (Ej: Factura, Nota Crédito)';
+
+-- Tabla de Tipos de Transacción
+CREATE TABLE `tipos_transaccion` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(100) NOT NULL,
+    `descripcion` VARCHAR(255) NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_tipos_transaccion_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Tipos de transacción para numeración de documentos';
+
+-- Tabla de Prefijos para Numeración
+CREATE TABLE `prefijos` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `tipo_transaccion_id` BINARY(16) NOT NULL,
+    `prefijo` VARCHAR(20) NOT NULL,
+    `numeracion_actual` INT NOT NULL DEFAULT 1,
+    `descripcion` VARCHAR(255) NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`tipo_transaccion_id`) REFERENCES `tipos_transaccion`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uk_prefijos_tipo` (`suscriptor_id`, `tipo_transaccion_id`)
+) ENGINE=InnoDB COMMENT='Prefijos y numeración para documentos';
+
+-- Tabla de Conceptos PH (Plantillas para Facturación)
+CREATE TABLE `conceptos_ph` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(255) NOT NULL,
+    `descripcion` TEXT NULL,
+    `tipo_concepto` VARCHAR(100) NOT NULL,
+    `valor_base` DECIMAL(15, 2) NOT NULL,
+    `aplica_por_coeficiente` TINYINT(1) NOT NULL DEFAULT 1,
+    `aplica_por_area` TINYINT(1) NOT NULL DEFAULT 0,
+    `cuenta_id` BINARY(16) NULL, -- Cuenta de ingreso que afecta
+    `centro_costo_id` BINARY(16) NULL,
+    `aplica_iva` TINYINT(1) NOT NULL DEFAULT 0,
+    `aplica_intereses` TINYINT(1) NOT NULL DEFAULT 0,
+    `porcentaje_iva` DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+    `periodo_desde` DATE NULL,
+    `periodo_hasta` DATE NULL,
+    `es_constante` TINYINT(1) NOT NULL DEFAULT 1,
+    `activo` TINYINT(1) NOT NULL DEFAULT 1,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`cuenta_id`) REFERENCES `plan_cuentas`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`centro_costo_id`) REFERENCES `centros_costo`(`id`) ON DELETE SET NULL,
+    INDEX `idx_conceptos_ph_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Plantillas para la generación de conceptos de factura';
+
+-- =====================================================================
+-- SECCIÓN 4: TABLAS DEL NÚCLEO CONTABLE
+-- =====================================================================
+
+-- Tabla de Movimientos Contables (Cabecera)
+CREATE TABLE `movimientos_contables` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `numero` VARCHAR(50) NOT NULL,
+    `tipo` ENUM('venta', 'compra', 'ingreso', 'egreso', 'nota', 'apertura', 'cierre') NOT NULL,
+    `fecha` DATE NOT NULL,
+    `periodo_id` BINARY(16) NOT NULL,
+    `descripcion` TEXT NULL,
+    `estado` ENUM('borrador', 'contabilizado', 'anulado') NOT NULL DEFAULT 'borrador',
+    `usuario_creacion_id` BINARY(16) NOT NULL,
+    `centro_costo_id` BINARY(16) NULL,
+    `partida_presupuestal_id` BINARY(16) NULL,
+    `conciliado` TINYINT(1) NOT NULL DEFAULT 0,
+    `fecha_conciliacion` TIMESTAMP NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`periodo_id`) REFERENCES `periodos_contables`(`id`) ON DELETE RESTRICT,
+    FOREIGN KEY (`usuario_creacion_id`) REFERENCES `usuarios`(`id`) ON DELETE RESTRICT,
+    FOREIGN KEY (`centro_costo_id`) REFERENCES `centros_costo`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`partida_presupuestal_id`) REFERENCES `partidas_presupuestales`(`id`) ON DELETE SET NULL,
+    UNIQUE KEY `uk_movimientos_numero` (`suscriptor_id`, `numero`),
+    INDEX `idx_movimientos_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Cabecera de los comprobantes de contabilidad';
+
+-- Tabla de Detalle de Movimientos Contables
+CREATE TABLE `movimiento_detalle` (
+    `id` BINARY(16) PRIMARY KEY,
+    `movimiento_id` BINARY(16) NOT NULL,
+    `cuenta_id` BINARY(16) NOT NULL,
+    `tercero_id` BINARY(16) NULL,
+    `centro_costo_id` BINARY(16) NULL,
+    `descripcion` TEXT NULL,
+    `debito` DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    `credito` DECIMAL(18, 2) NOT NULL DEFAULT 0.00,
+    `base_gravable` DECIMAL(18, 2) NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`movimiento_id`) REFERENCES `movimientos_contables`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`cuenta_id`) REFERENCES `plan_cuentas`(`id`) ON DELETE RESTRICT,
+    FOREIGN KEY (`tercero_id`) REFERENCES `terceros`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`centro_costo_id`) REFERENCES `centros_costo`(`id`) ON DELETE SET NULL,
+    INDEX `idx_detalle_movimiento` (`movimiento_id`)
+) ENGINE=InnoDB COMMENT='Detalle de los comprobantes (partida doble)';
+
+-- =====================================================================
+-- SECCIÓN 5: TABLAS DE FACTURACIÓN Y CUOTAS
+-- =====================================================================
+
+-- Tabla de Facturas (Cabecera)
+CREATE TABLE `facturas` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `numero_factura` VARCHAR(50) NOT NULL,
+    `tercero_id` BINARY(16) NOT NULL,
+    `unidad_id` BINARY(16) NULL,
+    `periodo_id` BINARY(16) NOT NULL,
+    `fecha_factura` DATE NOT NULL,
+    `fecha_vencimiento` DATE NOT NULL,
+    `subtotal` DECIMAL(15, 2) NOT NULL,
+    `descuentos` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    `iva` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    `total` DECIMAL(15, 2) NOT NULL,
+    `saldo_pendiente` DECIMAL(15, 2) NOT NULL,
+    `estado` ENUM('pendiente', 'pagada', 'vencida', 'anulada') NOT NULL DEFAULT 'pendiente',
+    `observaciones` TEXT NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`tercero_id`) REFERENCES `terceros`(`id`) ON DELETE RESTRICT,
+    FOREIGN KEY (`unidad_id`) REFERENCES `unidades`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`periodo_id`) REFERENCES `periodos_contables`(`id`) ON DELETE RESTRICT,
+    UNIQUE KEY `uk_facturas_numero` (`suscriptor_id`, `numero_factura`),
+    INDEX `idx_facturas_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Facturas de cobro a propietarios';
+
+-- Tabla de Conceptos de Factura (Detalle)
+CREATE TABLE `conceptos_factura` (
+    `id` BINARY(16) PRIMARY KEY,
+    `factura_id` BINARY(16) NOT NULL,
+    `concepto` VARCHAR(255) NOT NULL,
+    `cantidad` DECIMAL(10, 3) NOT NULL DEFAULT 1.000,
+    `valor_unitario` DECIMAL(15, 2) NOT NULL,
+    `valor_total` DECIMAL(15, 2) NOT NULL,
+    `cuenta_id` BINARY(16) NOT NULL,
+    `centro_costo_id` BINARY(16) NULL,
+    FOREIGN KEY (`factura_id`) REFERENCES `facturas`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`cuenta_id`) REFERENCES `plan_cuentas`(`id`) ON DELETE RESTRICT,
+    FOREIGN KEY (`centro_costo_id`) REFERENCES `centros_costo`(`id`) ON DELETE SET NULL,
+    INDEX `idx_conceptos_factura` (`factura_id`)
+) ENGINE=InnoDB COMMENT='Detalle de las líneas de cada factura';
+
+-- Tabla de Pagos
+CREATE TABLE `pagos` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `factura_id` BINARY(16) NOT NULL,
+    `fecha_pago` DATE NOT NULL,
+    `valor_pagado` DECIMAL(15, 2) NOT NULL,
+    `metodo_pago` VARCHAR(50) NULL,
+    `referencia_pago` VARCHAR(100) NULL,
+    `observaciones` TEXT NULL,
+    `usuario_registro_id` BINARY(16) NOT NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`factura_id`) REFERENCES `facturas`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`usuario_registro_id`) REFERENCES `usuarios`(`id`) ON DELETE RESTRICT,
+    INDEX `idx_pagos_factura` (`factura_id`)
+) ENGINE=InnoDB COMMENT='Registro de pagos realizados a las facturas';
+
+-- =====================================================================
+-- SECCIÓN 6: TABLAS ADICIONALES (ZONAS COMUNES, CONFIGURACIÓN, ETC.)
+-- =====================================================================
+
+-- Tabla de Zonas Comunes
+CREATE TABLE `zonas_comunes` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `nombre` VARCHAR(100) NOT NULL,
+    `descripcion` VARCHAR(255) NULL,
+    `capacidad_maxima` INT NULL,
+    `estado` ENUM('disponible', 'no_disponible', 'en_mantenimiento') NOT NULL DEFAULT 'disponible',
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    INDEX `idx_zonas_comunes_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Zonas comunes disponibles para reserva';
+
+-- Tabla de Reservas
+CREATE TABLE `reservas` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `zona_comun_id` BINARY(16) NOT NULL,
+    `unidad_id` BINARY(16) NOT NULL,
+    `usuario_solicita_id` BINARY(16) NOT NULL,
+    `fecha_reserva` DATE NOT NULL,
+    `hora_inicio` TIME NOT NULL,
+    `hora_fin` TIME NOT NULL,
+    `estado` ENUM('pendiente', 'aprobada', 'cancelada', 'cumplida') NOT NULL DEFAULT 'pendiente',
+    `observaciones` TEXT NULL,
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`zona_comun_id`) REFERENCES `zonas_comunes`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`unidad_id`) REFERENCES `unidades`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`usuario_solicita_id`) REFERENCES `usuarios`(`id`) ON DELETE RESTRICT,
+    INDEX `idx_reservas_zona_fecha` (`zona_comun_id`, `fecha_reserva`)
+) ENGINE=InnoDB COMMENT='Reservas de las zonas comunes';
+
+-- Tabla de Configuración por Suscriptor
+CREATE TABLE `configuracion_suscriptor` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NOT NULL,
+    `categoria` VARCHAR(50) NOT NULL,
+    `clave` VARCHAR(100) NOT NULL,
+    `valor` TEXT NULL,
+    `descripcion` TEXT NULL,
+    `tipo` VARCHAR(30) NOT NULL DEFAULT 'texto',
+    `fecha_creacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `fecha_actualizacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `uk_configuracion_clave` (`suscriptor_id`, `categoria`, `clave`),
+    INDEX `idx_configuracion_suscriptor` (`suscriptor_id`)
+) ENGINE=InnoDB COMMENT='Configuraciones y preferencias específicas de cada suscriptor';
+
+-- Tabla de Auditoría
+CREATE TABLE `auditoria` (
+    `id` BINARY(16) PRIMARY KEY,
+    `suscriptor_id` BINARY(16) NULL,
+    `usuario_id` BINARY(16) NULL,
+    `accion` VARCHAR(100) NOT NULL,
+    `tabla_afectada` VARCHAR(100) NULL,
+    `registro_id` BINARY(16) NULL,
+    `descripcion` VARCHAR(255) NULL,
+    `datos_antiguos` JSON NULL,
+    `datos_nuevos` JSON NULL,
+    `ip_address` VARCHAR(45) NULL,
+    `fecha` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`suscriptor_id`) REFERENCES `suscriptores`(`id`) ON DELETE SET NULL,
+    FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`) ON DELETE SET NULL,
+    INDEX `idx_auditoria_suscriptor` (`suscriptor_id`),
+    INDEX `idx_auditoria_fecha` (`fecha`)
+) ENGINE=InnoDB COMMENT='Bitácora de acciones importantes en el sistema';
+
+-- =====================================================================
+
+paso 2. Crear frontend con la estructura básica de paginas básicas y datos de ejemplo (dashboard, contabilidad, facturación, tesoreria, nomina, activos fijos, información exógena, mi comunidad, configuracion)
+
+Paso 3: Implementación del Servicio de Facturación (El Corazón de la App)
+Objetivo del Paso: Escribir el código del servicio más importante y complejo de la aplicación: el que genera las facturas de cuota de administración de forma masiva y transaccional.
+
+Rol del IA: Desarrollador Backend Senior, experto en lógica de negocio y transacciones de base de datos.
+
+Contexto Requerido:
+
+Continuamos el proyecto "Gravi" con el esquema Prisma ya definido.
+Este servicio debe ser transaccional: o se crean todas las facturas y sus asientos contables, o no se crea nada.
+El servicio debe ser seguro, filtrando siempre por suscriptor_id.
+La lógica debe seguir el pseudocódigo proporcionado.
+Tarea Específica:
+
+Dentro del módulo facturacion, crea un archivo facturacion.service.ts.
+Implementa el método generarFacturasAdministracion(suscriptorId: string, periodoId: string, usuarioId: string).
+La lógica interna de este método debe seguir estrictamente el siguiente pseudocódigo de alto nivel:
+
+// =====================================================================
+// INICIO DEL PROCESO: Generación Masiva de Facturas
+// =====================================================================
+
+// 1. INICIO Y RECEPCIÓN DE PARÁMETROS
+// El sistema recibe la solicitud de un usuario con permisos para realizar la facturación en lote.
+// Parámetros de entrada: ID del Suscriptor, ID del Período Contable.
+
+INICIAR_PROCESO("Generación de Facturas", p_suscriptor_id, p_periodo_id)
+
+
+// 2. VALIDACIÓN DE REGLAS DE NEGOCIO (Pre-condiciones)
+// El Módulo de Facturación verifica que se puede proceder.
+
+SI (el Suscriptor NO existe o está inactivo) ENTONCES:
+    MOSTRAR_ERROR("Suscriptor inválido.")
+    FINALIZAR_PROCESO()
+FIN SI
+
+SI (el Período Contable NO existe, no pertenece al Suscriptor o ya está cerrado) ENTONCES:
+    MOSTRAR_ERROR("Período contable inválido o cerrado.")
+    FINALIZAR_PROCESO()
+FIN SI
+
+SI (ya existen facturas para este Suscriptor, Período y numeracion) ENTONCES:
+    MOSTRAR_ERROR("Las facturas para este período ya fueron generadas.")
+    FINALIZAR_PROCESO()
+FIN SI
+
+// 3. OBTENCIÓN DE DATOS NECESARIOS
+// El Módulo de Facturación solicita la información requerida a otros módulos.
+
+// Del Módulo de Unidades:
+lista_unidades_activas = OBTENER_UNIDADES_ACTIVAS(p_suscriptor_id)
+
+// Del Módulo de Contabilidad:
+periodo_info = OBTENER_PERIODO(p_periodo_id)
+
+// Del Módulo de Facturacion:
+conceptos_de_facturacion_generales = OBTENER_CONCEPTOS_PH(p_suscriptor_id)
+conceptos_de_facturacion_individuales = OBTENER_CONCEPTOS_PH_por_unidad(p_suscriptor_id)
+configuracion_contable = OBTENER_CONFIGURACION_CONTABLE_POR_CONCEPTO(p_suscriptor_id)
+
+
+
+// 4. BUCLE DE PROCESAMIENTO POR UNIDAD
+// El Módulo de Facturación recorre cada unidad para generar su factura.
+
+INICIAR_OPERACION_AUTÓMATICA() // Asegurar que todo o nada se guarda
+
+PARA CADA unidad EN lista_unidades_activas:
+    
+    // 4.1. CÁLCULO DEL VALOR A FACTURAR
+    // Se calcula el total basado en los conceptos configurados.
+    
+    detalles_de_la_factura = []
+    valor_total_factura = 0
+    
+    PARA CADA concepto EN conceptos_de_facturacion:
+        valor_concepto = CALCULAR_VALOR_CONCEPTO(concepto, unidad)
+        AÑADIR_A_LISTA(detalles_de_la_factura, {concepto, valor_concepto})
+        valor_total_factura = valor_total_factura + valor_concepto
+    FIN PARA
+
+
+    // 4.2. CREACIÓN DE LA FACTURA
+    // Se crea el registro principal de la factura.
+    
+    datos_factura = {
+        propietario: unidad.propietario,
+        unidad: unidad,
+        periodo: periodo_info,
+        valor_total: valor_total_factura,
+        estado: "Pendiente"
+    }
+    nueva_factura = MODULO_FACTURACION.CREAR_FACTURA(datos_factura)
+
+
+    // 4.3. CREACIÓN DE LOS DETALLES DE LA FACTURA
+    // Se asocian los conceptos calculados a la nueva factura.
+    
+    MODULO_FACTURACION.AÑADIR_DETALLES(nueva_factura, detalles_de_la_factura)
+
+
+    // 4.4. REGISTRO CONTABLE (PARTIDA DOBLE)
+    // Se notifica al Módulo Contable para que cree el asiento correspondiente.
+    
+    datos_asiento = {
+        tipo: "Ingreso por Cuotas",
+        valor_total: valor_total_factura,
+        descripcion: "Facturación automática período " + periodo_info.nombre,
+        afecta_propietario: unidad.propietario
+    }
+    MODULO_CONTABLE.REGISTRAR_ASIENTO_INGRESO(datos_asiento, configuracion_contable)
+
+// 5. FINALIZACIÓN Y CONFIRMACIÓN
+// Si todo salió bien, se confirman los cambios.
+
+CONFIRMAR_OPERACION_AUTÓMATICA()
+MOSTRAR_MENSAJE("Proceso finalizado. Se generaron X facturas correctamente.")
+
+// 6. REGISTRO DE AUDITORÍA
+// Se deja constancia de la acción realizada.
+MODULO_SEGURIDAD.REGISTRAR_ACCION(usuario_actual, "GENERAR_FACTURAS_MASIVAS", detalles_del_proceso)
+
+FINALIZAR_PROCESO()
+
+// =====================================================================
+// FIN DEL PROCESO
+// =====================================================================
+
+
+Validaciones: Verificar que el suscriptor y el período existen y son válidos.
+Obtención de Datos: Cargar las unidades activas, conceptos PH y configuración contable del suscriptor.
+Bucle Transaccional: Iniciar una transacción de Prisma ($transaction).
+Dentro de la transacción, recorrer cada unidad y para cada una:
+Calcular el total de la factura.
+Crear el registro de Factura.
+Crear los ConceptoFactura asociados.
+Crear el MovimientoContable y sus MovimientoDetalle (partida doble).
+Finalización: Confirmar o revertir la transacción.
+Auditoría: Registrar la acción.
+El código debe manejar errores de forma robusta y estar bien comentado.
+Salida Esperada:
+
+El código fuente completo del archivo facturacion.service.ts.
+
+
+Paso 4: Implementación de Autenticación y Autorización
+Objetivo del Paso: Asegurar la aplicación. Implementar el flujo de login usando un proveedor externo y crear una estrategia para proteger los endpoints, asegurando que los usuarios solo puedan acceder a los datos de su suscriptor_id.
+
+Rol del IA: Experto en seguridad de aplicaciones, especialista en Auth0 y JWT.
+
+Contexto Requerido:
+
+Continuamos el proyecto "Gravi".
+Usaremos Auth0 como proveedor de identidad.
+El frontend (que crearemos después) nos enviará un token JWT (access token) de Auth0 en cada petición.
+Necesitamos un mecanismo para que, a partir del token, el backend sepa qué suscriptor_id está operando.
+Tarea Específica:
+
+Instala y configura el paquete @nestjs/auth y @auth0/auth0-nest.
+Crea una estrategia JWT (JwtStrategy) que valide el token con Auth0 y extraiga el email y sub (user_id de Auth0) del payload.
+Crea un AuthGuard personalizado que, además de validar el token, haga una consulta a la base de datos para encontrar el suscriptor_id asociado a ese usuario. Este suscriptor_id debe ser adjuntado al objeto Request (ej: request.user.suscriptorId) para que los servicios puedan usarlo.
+Muestra cómo proteger un endpoint de ejemplo usando este AuthGuard.
+Salida Esperada:
+
+Los archivos de configuración de Auth0.
+El código de la JwtStrategy.
+El código del AuthGuard personalizado.
+Un ejemplo de un controlador con un endpoint protegido.
+
+
+Paso 5: Creación de los Endpoints de la API (CRUD y Facturación)
+Objetivo del Paso: Exponer la lógica de negocio a través de una API RESTful. Crear los endpoints para gestionar las entidades principales y para ejecutar el proceso de facturación.
+
+Rol del IA: Desarrollador Backend, experto en la creación de APIs REST con NestJS.
+
+Contexto Requerido:
+
+Continuamos el proyecto "Gravi" con el servicio de facturación y la autenticación ya implementados.
+Todos los endpoints que manejen datos de suscriptor deben estar protegidos por el AuthGuard creado en el paso anterior.
+Las consultas a la base de datos dentro de los controladores/servicios deben filtrar siempre por request.user.suscriptorId.
+Tarea Específica:
+
+Crea los controladores y endpoints CRUD básicos para:
+UnidadesController: GET (todos), GET (id), POST, PUT, DELETE.
+TercerosController: GET (todos), GET (id), POST, PUT, DELETE.
+FacturasController: GET (todos, con filtros de estado/periodo), GET (id).
+En el FacturacionController, crea el endpoint POST /generar que llame al método generarFacturasAdministracion del servicio. Este endpoint debe recibir periodoId en el cuerpo de la petición.
+Asegúrate de que todas las respuestas sigan un formato consistente (ej: { data: ..., message: ... }).
+Salida Esperada:
+
+El código fuente de los controladores unidades.controller.ts, terceros.controller.ts y facturacion.controller.ts.
+
+Paso 6: Configuración del Proyecto Frontend (Next.js)
+Objetivo del Paso: Inicializar el proyecto frontend, configurar la estructura básica y preparar la conexión con el backend.
+
+Rol del IA: Desarrollador Frontend senior, experto en ux/ui , React y Next.js.
+
+Contexto Requerido:
+
+El backend de "Gravi" ya está en marcha y expone sus endpoints en una URL (ej: http://localhost:3000).
+El frontend será una aplicación Next.js.
+Usaremos Tailwind CSS para el styling.
+La comunicación con el backend se hará a través de axios o fetch.
+Tarea Específica:
+
+Proporciona los comandos para crear un nuevo proyecto Next.js con TypeScript y Tailwind CSS.
+Diseña una estructura de carpetas simple para el frontend (components, pages, lib, hooks, types).
+Configura un cliente axios base en lib/api.ts para centralizar la URL del backend y la configuración de headers (para el token JWT).
+Crea un layout básico (components/Layout.tsx) que incluya una barra de navegación simple.
+Salida Esperada:
+
+Comandos de la CLI.
+Estructura de carpetas del frontend.
+Código del cliente axios y del componente Layout.
+
+Paso 7: Construcción del Dashboard y la Interfaz de Facturación
+Objetivo del Paso: Crear la interfaz de usuario principal para el administrador de la copropiedad, incluyendo el dashboard y la vista para ejecutar y visualizar las facturas.
+
+Rol del IA: Desarrollador Frontend, experto en la creación de dashboards interactivos.
+
+Contexto Requerido:
+
+Continuamos el proyecto frontend "Gravi".
+Ya existe un cliente API para comunicarse con el backend.
+El usuario ya ha iniciado sesión y tenemos su token JWT almacenado (ej: en un contexto de React).
+El backend tiene un endpoint POST /facturacion/generar y GET /facturas.
+Tarea Específica:
+
+Crea la página del dashboard (pages/index.tsx). Debe mostrar:
+Un mensaje de bienvenida.
+Tarjetas con estadísticas (ej: Total de Unidades, Total de Facturas del Mes, Total de Facturas Vencidas). Puedes usar datos de prueba por ahora.
+Crea una página de facturación (pages/facturacion.tsx).
+En esta página, incluye:
+Un selector para elegir el periodoId (puedes llenarlo con datos de prueba).
+Un botón "Generar Facturas". Al hacer clic, debe llamar al endpoint POST /facturacion/generar y mostrar un indicador de carga y un mensaje de éxito o error.
+Una tabla que liste las facturas existentes, llamando al endpoint GET /facturas. Debe mostrar columnas como: Número, Propietario, Período, Total, Estado.
+Salida Esperada:
+
+El código de las páginas index.tsx y facturacion.tsx.
+El código de cualquier componente adicional que hayas creado (ej: una tarjeta de estadística, una tabla de facturas).
+Paso 8: Integración Final y Detalles de UX
+Objetivo del Paso: Conectar todas las piezas, refinar la experiencia de usuario y añadir detalles importantes como el manejo de estados de carga y errores.
+
+Rol del IA: Desarrollador Full-Stack, enfocado en la integración y la experiencia de usuario (UX).
+
+Contexto Requerido:
+
+Tanto el backend como el frontend tienen sus funcionalidades principales implementadas.
+El flujo de login y la obtención del token JWT ya existen (aunque no lo hemos detallado, se asume hecho).
+Queremos pulir la aplicación para que se sienta como un producto terminado y robusto.
+Tarea Específica:
+
+Manejo de Estados Globales: Implementa un Contexto de React (AuthContext) para manejar el estado de autenticación del usuario (si está logueado, su token, su información). Este contexto debe proveer el token al cliente API.
+Página de Login: Crea una página pages/login.tsx con un botón "Iniciar Sesión con Auth0" que redirija al flujo de login de Auth0.
+Indicadores de Carga y Errores: Refina la página de facturación. Muestra un spinner mientras se generan las facturas. Muestra notificaciones (toast) claras para el éxito o el fracaso de la operación.
+Rutas Protegidas: Crea un HOC (Higher-Order Component) o una función useProtectedRoute que redirija a la página de login si un usuario no autenticado intenta acceder al dashboard o a la página de facturación.
+Detalle de Factura: Haz que la columna "Número" de la tabla de facturas sea un enlace que lleve a una página de detalle (pages/facturas/[id].tsx) donde se muestre la información completa de la factura y sus conceptos.
+Salida Esperada:
+
+Código del AuthContext.
+Código de la página login.tsx.
+Código de los componentes de carga y notificaciones.
+Lógica de rutas protegidas.
+Código de la página de detalle de factura.
