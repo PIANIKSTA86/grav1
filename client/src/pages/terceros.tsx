@@ -55,7 +55,7 @@ export default function Terceros() {
       id: "3",
       tipo: "juridica",
       tipoId: "NIT",
-      numeroId: "900123456-7",
+      numeroId: "900123456",
       nombre: "Constructora ABC S.A.S.",
       email: "info@constructoraabc.com",
       telefono: "601 234 5678",

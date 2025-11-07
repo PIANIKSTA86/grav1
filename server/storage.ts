@@ -9,6 +9,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByNitAndCopropiedad(nitUsuario: string, nitCopropiedad: string): Promise<User | undefined>;
+  getUserWithSuscriptor(id: string): Promise<any>;
   createUser(user: InsertUser): Promise<User>;
 }
 
@@ -39,6 +40,30 @@ export class DatabaseStorage implements IStorage {
     
     if (result.length === 0) return undefined;
     return result[0].usuarios;
+  }
+
+  async getUserWithSuscriptor(id: string): Promise<any> {
+    const db = await getDatabase();
+    
+    // First get the user
+    const userResult = await db.select().from(usuarios).where(eq(usuarios.id, id)).limit(1);
+    if (userResult.length === 0) return undefined;
+    
+    const user = userResult[0];
+    
+    // Check if user has a suscriptorId
+    if (!user.suscriptorId) return { user, suscriptor: null };
+    
+    // Then get the suscriptor
+    const suscriptorResult = await db.select().from(suscriptores).where(eq(suscriptores.id, user.suscriptorId)).limit(1);
+    if (suscriptorResult.length === 0) return { user, suscriptor: null };
+    
+    const suscriptor = suscriptorResult[0];
+    
+    return {
+      user,
+      suscriptor
+    };
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {

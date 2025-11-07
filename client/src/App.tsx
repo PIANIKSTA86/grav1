@@ -16,11 +16,17 @@ import PlanCuentas from "@/pages/plan-cuentas";
 import Comprobantes from "@/pages/comprobantes";
 import Periodos from "@/pages/periodos";
 import Facturacion from "@/pages/facturacion";
-import Tesoreria from "@/pages/tesoreria";
+import { Recaudos } from "@/pages/recaudos";
 import Nomina from "@/pages/nomina";
 import Presupuestos from "@/pages/presupuestos";
 import ActivosFijos from "@/pages/activos-fijos";
 import Exogena from "@/pages/exogena";
+import { Reservas } from "@/pages/reservas";
+import { Calendario } from "@/pages/calendario";
+import { Pqrs } from "@/pages/pqrs";
+import { Documentos } from "@/pages/documentos";
+import { Pagos } from "@/pages/pagos";
+import { Bancos } from "@/pages/bancos";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -103,6 +109,14 @@ function AppContent() {
               </ProtectedRoute>
             </Route>
             
+            <Route path="/bancos">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Bancos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+            
             <Route path="/facturacion">
               <ProtectedRoute>
                 <AuthenticatedLayout>
@@ -111,10 +125,18 @@ function AppContent() {
               </ProtectedRoute>
             </Route>
             
-            <Route path="/tesoreria">
+            <Route path="/recaudos">
               <ProtectedRoute>
                 <AuthenticatedLayout>
-                  <Tesoreria />
+                  <Recaudos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+            
+            <Route path="/pagos">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Pagos />
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
@@ -150,7 +172,39 @@ function AppContent() {
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
-            
+
+            <Route path="/reservas">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Reservas />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/calendario">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Calendario />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/pqrs">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Pqrs />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/documentos">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Documentos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
             <Route component={NotFound} />
           </Switch>
           <Toaster />

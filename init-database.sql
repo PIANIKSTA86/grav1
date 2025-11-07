@@ -52,10 +52,13 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 -- Insertar datos de prueba
 INSERT IGNORE INTO suscriptores (id, nombre, nit, subdominio, email_contacto, direccion, telefono, activo) VALUES
-('550e8400-e29b-41d4-a716-446655440000', 'Edificio Torres del Parque', '900123456-7', 'torres-del-parque', 'admin@torresdelparque.com', 'Calle 123 #45-67, Bogotá', '+57 301 234 5678', 1);
+('550e8400-e29b-41d4-a716-446655440000', 'Edificio Torres del Parque', '900123456', 'torres-del-parque', 'admin@torresdelparque.com', 'Calle 123 #45-67, Bogotá', '+57 301 234 5678', 1),
+('550e8400-e29b-41d4-a716-446655440003', 'Conjunto Residencial Los Alamos', '900987654', 'los-alamos', 'admin@losalamos.com', 'Carrera 45 #12-34, Medellín', '+57 304 567 8901', 1);
 
 INSERT IGNORE INTO roles (id, suscriptor_id, nombre, descripcion) VALUES
-('550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', 'Administrador', 'Usuario con acceso completo al sistema');
+('550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', 'Administrador', 'Usuario con acceso completo al sistema'),
+('550e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440003', 'Administrador', 'Usuario con acceso completo al sistema');
 
 INSERT IGNORE INTO usuarios (id, nombre, apellido, email, nit, password, telefono, rol_id, suscriptor_id, activo) VALUES
-('550e8400-e29b-41d4-a716-446655440002', 'Admin', 'Sistema', 'admin@gravi.com', '1234567890', 'admin123', '+57 300 123 4567', '550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', 1);
+('550e8400-e29b-41d4-a716-446655440002', 'Admin', 'Sistema', 'admin@gravi.com', '1234567890', 'admin123', '+57 300 123 4567', '550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', 1),
+('550e8400-e29b-41d4-a716-446655440005', 'María', 'González', 'maria@losalamos.com', '1987654321', 'admin456', '+57 305 678 9012', '550e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440003', 1);

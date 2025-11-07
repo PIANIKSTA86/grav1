@@ -27,7 +27,7 @@ export default function Suscriptores() {
     {
       id: "1",
       nombre: "Edificio Torres del Parque",
-      nit: "900123456-7",
+      nit: "900123456",
       direccion: "Cra 5 # 26-00, Bogotá",
       telefono: "601 234 5678",
       email: "admin@torresdelparque.com",
@@ -36,8 +36,8 @@ export default function Suscriptores() {
     },
     {
       id: "2",
-      nombre: "Conjunto Residencial Los Arrayanes",
-      nit: "900234567-8",
+      nombre: "Conjunto Residencial Los Alamos",
+      nit: "900987654",
       direccion: "Calle 85 # 15-20, Bogotá",
       telefono: "601 345 6789",
       email: "info@losarrayanes.com",

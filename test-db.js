@@ -14,8 +14,11 @@ async function testConnection() {
     const [rows] = await connection.execute('SELECT 1 as test');
     console.log('✅ Connection successful:', rows);
 
-    const [users] = await connection.execute('SELECT id, nombre, email FROM usuarios');
+    const [users] = await connection.execute('SELECT id, nombre, apellido, email, nit FROM usuarios');
     console.log('👥 Users in database:', users);
+
+    const [suscriptores] = await connection.execute('SELECT nombre, nit FROM suscriptores');
+    console.log('🏢 Copropiedades in database:', suscriptores);
 
     await connection.end();
   } catch (error) {

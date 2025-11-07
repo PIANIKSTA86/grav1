@@ -27,12 +27,14 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
 
 export function HorizontalHeader() {
   const [location] = useLocation();
+  const { suscriptor } = useAuth();
 
   //todo: remove mock functionality
-  const suscriptorActual = {
+  const suscriptorActual = suscriptor || {
     nombre: "Edificio Torres del Parque",
     nit: "900123456-7",
   };

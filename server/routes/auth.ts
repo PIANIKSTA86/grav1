@@ -94,9 +94,25 @@ authRouter.post("/logout", (req, res) => {
 });
 
 // Get current user
-authRouter.get("/me", requireAuth, (req, res) => {
-  const { password, ...userWithoutPassword } = req.user as any;
-  res.json({ user: userWithoutPassword });
+authRouter.get("/me", requireAuth, async (req, res) => {
+  try {
+    const userWithSuscriptor = await storage.getUserWithSuscriptor((req.user as any).id);
+    
+    if (!userWithSuscriptor) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Remove password from response
+    const { password, ...userWithoutPassword } = userWithSuscriptor.user;
+
+    res.json({ 
+      user: userWithoutPassword,
+      suscriptor: userWithSuscriptor.suscriptor
+    });
+  } catch (error) {
+    console.error("Error getting current user:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
 });
 
 export default authRouter;

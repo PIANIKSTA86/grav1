@@ -18,9 +18,9 @@ import { cn } from "@/lib/utils";
 
 //todo: remove mock functionality
 const mockSuscriptores = [
-  { id: "1", nombre: "Edificio Torres del Parque", nit: "900123456-7" },
-  { id: "2", nombre: "Conjunto Residencial Los Arrayanes", nit: "900234567-8" },
-  { id: "3", nombre: "Conjunto Campestre El Retiro", nit: "900345678-9" },
+  { id: "1", nombre: "Edificio Torres del Parque", nit: "900123456" },
+  { id: "2", nombre: "Conjunto Residencial Los Alamos", nit: "900987654" },
+  { id: "3", nombre: "Conjunto Campestre El Retiro", nit: "900345678" },
 ];
 
 export function SuscriptorSelector() {

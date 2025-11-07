@@ -12,8 +12,20 @@ interface User {
   suscriptorId: string | null;
 }
 
+interface Suscriptor {
+  id: string;
+  nombre: string;
+  nit: string;
+  subdominio: string | null;
+  emailContacto: string | null;
+  direccion: string | null;
+  telefono: string | null;
+  activo: boolean;
+}
+
 interface AuthContextType {
   user: User | null;
+  suscriptor: Suscriptor | null;
   login: (nitCopropiedad: string, nitUsuario: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
@@ -33,6 +45,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   console.log("🔐 AuthProvider initialized");
   const [user, setUser] = useState<User | null>(null);
+  const [suscriptor, setSuscriptor] = useState<Suscriptor | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Monitor state changes
@@ -64,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+        setSuscriptor(data.suscriptor);
       }
     } catch (error) {
       console.log('Auth check failed, assuming not authenticated');
@@ -78,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // TEMPORAL: Login mock para testing
       if (nitCopropiedad === "900123456" && nitUsuario === "1234567890" && password === "admin123") {
-        console.log("🎭 Usando login mock");
+        console.log("🎭 Usando login mock para Torres del Parque");
         const mockUser = {
           id: "550e8400-e29b-41d4-a716-446655440002",
           nombre: "Admin",
@@ -90,9 +104,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           fechaActualizacion: new Date().toISOString(),
           suscriptorId: "550e8400-e29b-41d4-a716-446655440000"
         };
+        const mockSuscriptor = {
+          id: "550e8400-e29b-41d4-a716-446655440000",
+          nombre: "Edificio Torres del Parque",
+          nit: "900123456",
+          subdominio: "torres-del-parque",
+          emailContacto: "admin@torresdelparque.com",
+          direccion: "Calle 123 #45-67, Bogotá",
+          telefono: "+57 301 234 5678",
+          activo: true
+        };
         console.log("👤 Setting user:", mockUser);
         setUser(mockUser);
-        console.log("✅ User set successfully");
+        setSuscriptor(mockSuscriptor);
+        console.log("✅ User and suscriptor set successfully");
+        return;
+      }
+
+      // Mock para Los Alamos
+      if (nitCopropiedad === "900987654" && nitUsuario === "1987654321" && password === "admin456") {
+        console.log("🎭 Usando login mock para Los Alamos");
+        const mockUser = {
+          id: "660e8400-e29b-41d4-a716-446655440005",
+          nombre: "María",
+          apellido: "González",
+          email: "maria@losalamos.com",
+          nit: "1987654321",
+          activo: true,
+          fechaCreacion: new Date().toISOString(),
+          fechaActualizacion: new Date().toISOString(),
+          suscriptorId: "660e8400-e29b-41d4-a716-446655440003"
+        };
+        const mockSuscriptor = {
+          id: "660e8400-e29b-41d4-a716-446655440003",
+          nombre: "Conjunto Residencial Los Alamos",
+          nit: "900987654",
+          subdominio: "los-alamos",
+          emailContacto: "admin@losalamos.com",
+          direccion: "Carrera 45 #12-34, Medellín",
+          telefono: "+57 304 567 8901",
+          activo: true
+        };
+        console.log("👤 Setting user:", mockUser);
+        setUser(mockUser);
+        setSuscriptor(mockSuscriptor);
+        console.log("✅ User and suscriptor set successfully");
         return;
       }
 
@@ -138,6 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setUser(null);
+      setSuscriptor(null);
     } finally {
       setIsLoading(false);
     }
@@ -169,6 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value: AuthContextType = {
     user,
+    suscriptor,
     login,
     logout,
     register,
