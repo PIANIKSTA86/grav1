@@ -71,8 +71,13 @@ const menuGroups: MenuGroup[] = [
     items: [
       {
         name: "Facturación",
-        path: "/facturacion",
+        path: "#",
         icon: Receipt,
+        subItems: [
+          { name: "Facturación por lotes", path: "/facturacion-lotes", icon: Receipt },
+          { name: "Conceptos de Facturación", path: "/facturacion-conceptos", icon: Calculator },
+          { name: "Configuración de Facturación", path: "/facturacion-config", icon: Settings },
+        ],
       },
       {
         name: "Nómina",

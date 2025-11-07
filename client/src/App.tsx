@@ -15,7 +15,9 @@ import Terceros from "@/pages/terceros";
 import PlanCuentas from "@/pages/plan-cuentas";
 import Comprobantes from "@/pages/comprobantes";
 import Periodos from "@/pages/periodos";
-import Facturacion from "@/pages/facturacion";
+import Facturacion from "@/pages/facturacion-lotes";
+import { FacturacionConceptos } from "@/pages/facturacion-conceptos";
+import { FacturacionConfig } from "@/pages/facturacion-config";
 import { Recaudos } from "@/pages/recaudos";
 import Nomina from "@/pages/nomina";
 import Presupuestos from "@/pages/presupuestos";
@@ -117,10 +119,26 @@ function AppContent() {
               </ProtectedRoute>
             </Route>
             
-            <Route path="/facturacion">
+            <Route path="/facturacion-lotes">
               <ProtectedRoute>
                 <AuthenticatedLayout>
                   <Facturacion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+            
+            <Route path="/facturacion-conceptos">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <FacturacionConceptos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+            
+            <Route path="/facturacion-config">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <FacturacionConfig />
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
