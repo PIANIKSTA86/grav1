@@ -1,38 +1,52 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { type User, type InsertUser, usuarios, suscriptores } from "@shared/schema";
+import { eq, and } from "drizzle-orm";
+import { getDatabase } from "./database";
 
 // modify the interface with any CRUD methods
 // you might need
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByNitAndCopropiedad(nitUsuario: string, nitCopropiedad: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const db = await getDatabase();
+    const result = await db.select().from(usuarios).where(eq(usuarios.id, id)).limit(1);
+    return result[0];
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const db = await getDatabase();
+    const result = await db.select().from(usuarios).where(eq(usuarios.email, email)).limit(1);
+    return result[0];
+  }
+
+  async getUserByNitAndCopropiedad(nitUsuario: string, nitCopropiedad: string): Promise<User | undefined> {
+    const db = await getDatabase();
+    const result = await db
+      .select()
+      .from(usuarios)
+      .innerJoin(suscriptores, eq(usuarios.suscriptorId, suscriptores.id))
+      .where(and(
+        eq(usuarios.nit, nitUsuario),
+        eq(suscriptores.nit, nitCopropiedad)
+      ))
+      .limit(1);
+    
+    if (result.length === 0) return undefined;
+    return result[0].usuarios;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const db = await getDatabase();
+    await db.insert(usuarios).values(insertUser);
+    const user = await db.select().from(usuarios).where(eq(usuarios.email, insertUser.email));
+    return user[0];
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

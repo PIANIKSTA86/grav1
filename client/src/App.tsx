@@ -4,7 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
-import { HorizontalHeader } from "@/components/horizontal-header";
+import { AuthenticatedLayout } from "@/components/authenticated-layout";
+import { useAuth, AuthProvider } from "@/contexts/auth-context";
 import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
@@ -21,20 +22,22 @@ import Presupuestos from "@/pages/presupuestos";
 import ActivosFijos from "@/pages/activos-fijos";
 import Exogena from "@/pages/exogena";
 
-function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-background">
-      <HorizontalHeader />
-      <main className="container mx-auto px-4 py-6">{children}</main>
-    </div>
-  );
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // If still loading after a reasonable time, show landing
+  if (isLoading) {
+    return <Landing />;
+  }
+
+  if (!isAuthenticated) {
+    return <Landing />;
+  }
+
+  return <>{children}</>;
 }
 
-function App() {
-  //todo: remove mock functionality
-  // En producción, verificar si el usuario está autenticado
-  const isAuthenticated = true; // Cambiar a true para ver el dashboard
-
+function AppContent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -42,88 +45,110 @@ function App() {
           <Switch>
             {/* Landing page pública */}
             <Route path="/landing" component={Landing} />
-            
+
             {/* Rutas autenticadas */}
             <Route path="/">
-              {isAuthenticated ? (
+              <ProtectedRoute>
                 <AuthenticatedLayout>
                   <Dashboard />
                 </AuthenticatedLayout>
-              ) : (
-                <Landing />
-              )}
+              </ProtectedRoute>
             </Route>
-            
+
             <Route path="/suscriptores">
-              <AuthenticatedLayout>
-                <Suscriptores />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Suscriptores />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
-            
+
             <Route path="/unidades">
-              <AuthenticatedLayout>
-                <Unidades />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Unidades />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
-            
+
             <Route path="/terceros">
-              <AuthenticatedLayout>
-                <Terceros />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Terceros />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
-            
+
             <Route path="/plan-cuentas">
-              <AuthenticatedLayout>
-                <PlanCuentas />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <PlanCuentas />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/comprobantes">
-              <AuthenticatedLayout>
-                <Comprobantes />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Comprobantes />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/periodos">
-              <AuthenticatedLayout>
-                <Periodos />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Periodos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/facturacion">
-              <AuthenticatedLayout>
-                <Facturacion />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Facturacion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/tesoreria">
-              <AuthenticatedLayout>
-                <Tesoreria />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Tesoreria />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/nomina">
-              <AuthenticatedLayout>
-                <Nomina />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Nomina />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/presupuestos">
-              <AuthenticatedLayout>
-                <Presupuestos />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Presupuestos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/activos-fijos">
-              <AuthenticatedLayout>
-                <ActivosFijos />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ActivosFijos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route path="/exogena">
-              <AuthenticatedLayout>
-                <Exogena />
-              </AuthenticatedLayout>
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <Exogena />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
             </Route>
             
             <Route component={NotFound} />
@@ -132,6 +157,14 @@ function App() {
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

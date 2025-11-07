@@ -2,23 +2,30 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
+import { useAuth } from "@/contexts/auth-context";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
 }
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+  const { user } = useAuth();
+
   const style = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",
   };
 
-  //todo: remove mock functionality
-  // En producción, esto vendría del contexto de autenticación
+  // TODO: Obtener información del suscriptor desde el contexto o API
+  // Por ahora usamos datos mock hasta implementar la lógica completa
   const suscriptorActual = {
     nombre: "Edificio Torres del Parque",
     nit: "900123456-7",
   };
+
+  if (!user) {
+    return null; // O redirigir a login
+  }
 
   return (
     <SidebarProvider style={style as React.CSSProperties}>

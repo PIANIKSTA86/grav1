@@ -9,16 +9,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/auth-context";
+import { useLocation } from "wouter";
 
 export function UserMenu() {
-  //todo: remove mock functionality
-  const user = {
-    nombre: "Juan",
-    apellido: "Pérez",
-    email: "juan.perez@gravi.com",
-  };
+  const { user, logout } = useAuth();
+  const [, setLocation] = useLocation();
+
+  if (!user) {
+    return null;
+  }
 
   const iniciales = `${user.nombre[0]}${user.apellido[0]}`;
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setLocation("/landing");
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -47,7 +58,7 @@ export function UserMenu() {
           <span>Configuración</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem data-testid="menu-item-logout" onClick={() => console.log("Cerrar sesión")}>
+        <DropdownMenuItem data-testid="menu-item-logout" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Cerrar sesión</span>
         </DropdownMenuItem>

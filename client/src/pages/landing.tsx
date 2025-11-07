@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Building2, FileText, Users, Wallet, TrendingUp, Shield } from "lucide-react";
 import {
@@ -10,22 +10,58 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/auth-context";
+import { useLocation } from "wouter";
 import buildingImage from "@assets/generated_images/Modern_condominium_building_exterior_f0fe84cd.png";
 
 export default function Landing() {
+  console.log("🏠 Landing component rendered");
+  const { login, isAuthenticated, user, logout } = useAuth();
+  console.log("🔐 Auth state:", { isAuthenticated, user });
+  const [, setLocation] = useLocation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [formData, setFormData] = useState({
     nitCopropiedad: "",
     nitUsuario: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log("🔄 Redirecting to dashboard...");
+      setLocation("/");
+    }
+  }, [isAuthenticated, user, setLocation]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login con:", formData);
-    // TODO: Implementar lógica de autenticación
-    // Esto establecerá el contexto del suscriptor y usuario
-    window.location.href = "/";
+    console.log("🔐 Iniciando login con:", formData);
+    setIsLoading(true);
+    setError("");
+
+    try {
+      console.log("📡 Llamando a login...");
+      await login(formData.nitCopropiedad, formData.nitUsuario, formData.password);
+      console.log("✅ Login exitoso");
+      setShowLoginModal(false);
+      setLocation("/");
+    } catch (error) {
+      console.error("❌ Error en login:", error);
+      setError(error instanceof Error ? error.message : "Error al iniciar sesión");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   const features = [
@@ -154,15 +190,16 @@ export default function Landing() {
           <DialogHeader>
             <DialogTitle>Iniciar Sesión</DialogTitle>
             <DialogDescription>
-              Ingrese sus credenciales y el NIT de la copropiedad para acceder al sistema
+              Ingrese el NIT de la copropiedad, su NIT de usuario y contraseña para acceder al sistema
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nit-copropiedad">NIT/ID de la Copropiedad</Label>
+              <Label htmlFor="nitCopropiedad">NIT Copropiedad</Label>
               <Input
-                id="nit-copropiedad"
-                placeholder="900123456-7"
+                id="nitCopropiedad"
+                type="text"
+                placeholder="123456789"
                 value={formData.nitCopropiedad}
                 onChange={(e) =>
                   setFormData({ ...formData, nitCopropiedad: e.target.value })
@@ -170,16 +207,13 @@ export default function Landing() {
                 required
                 data-testid="input-nit-copropiedad"
               />
-              <p className="text-xs text-muted-foreground">
-                Identificación de la copropiedad a la que desea acceder
-              </p>
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="nit-usuario">NIT/ID Usuario</Label>
+              <Label htmlFor="nitUsuario">NIT Usuario</Label>
               <Input
-                id="nit-usuario"
-                placeholder="1234567890"
+                id="nitUsuario"
+                type="text"
+                placeholder="987654321"
                 value={formData.nitUsuario}
                 onChange={(e) =>
                   setFormData({ ...formData, nitUsuario: e.target.value })
@@ -187,9 +221,6 @@ export default function Landing() {
                 required
                 data-testid="input-nit-usuario"
               />
-              <p className="text-xs text-muted-foreground">
-                Su número de identificación personal
-              </p>
             </div>
 
             <div className="space-y-2">
@@ -207,9 +238,20 @@ export default function Landing() {
               />
             </div>
 
+            {error && (
+              <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                {error}
+              </div>
+            )}
+
             <div className="flex flex-col gap-3 pt-4">
-              <Button type="submit" className="w-full" data-testid="button-submit-login">
-                Ingresar
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+                data-testid="button-submit-login"
+              >
+                {isLoading ? "Iniciando sesión..." : "Ingresar"}
               </Button>
               <Button
                 type="button"
