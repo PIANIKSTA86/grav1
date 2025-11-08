@@ -18,6 +18,7 @@ import Periodos from "@/pages/periodos";
 import Facturacion from "@/pages/facturacion-lotes";
 import { FacturacionConceptos } from "@/pages/facturacion-conceptos";
 import { FacturacionConfig } from "@/pages/facturacion-config";
+import { FacturacionReportes } from "@/pages/facturacion-reportes";
 import { Recaudos } from "@/pages/recaudos";
 import Nomina from "@/pages/nomina";
 import Presupuestos from "@/pages/presupuestos";
@@ -139,6 +140,14 @@ function AppContent() {
               <ProtectedRoute>
                 <AuthenticatedLayout>
                   <FacturacionConfig />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+            
+            <Route path="/facturacion-reportes">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <FacturacionReportes />
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>

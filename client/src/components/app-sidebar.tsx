@@ -1,4 +1,4 @@
-import { Home, Building2, Users, FileText, Receipt, Wallet, ClipboardList, DollarSign, Package, FileSpreadsheet, Settings, ChevronDown, ChevronRight, Grid3X3, Briefcase, Calculator, Truck, Calendar, CalendarDays, MessageSquare, FolderOpen, TrendingDown, Banknote } from "lucide-react";
+import { Home, Building2, Users, FileText, Receipt, Wallet, ClipboardList, DollarSign, Package, FileSpreadsheet, Settings, ChevronDown, ChevronRight, Briefcase, Calculator, Truck, Calendar, CalendarDays, MessageSquare, FolderOpen, TrendingDown, Banknote, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useSidebar } from "@/contexts/sidebar-context";
@@ -25,14 +25,14 @@ const menuGroups: MenuGroup[] = [
         icon: Home,
       },
       {
-        name: "Gestión",
-        path: "#",
-        icon: Grid3X3,
-        subItems: [
-          { name: "Suscriptores", path: "/suscriptores", icon: Building2 },
-          { name: "Unidades", path: "/unidades", icon: Package },
-          { name: "Terceros", path: "/terceros", icon: Users },
-        ],
+        name: "Suscriptores",
+        path: "/suscriptores",
+        icon: Building2,
+      },
+      {
+        name: "Terceros",
+        path: "/terceros",
+        icon: Users,
       },
     ],
   },
@@ -74,9 +74,11 @@ const menuGroups: MenuGroup[] = [
         path: "#",
         icon: Receipt,
         subItems: [
-          { name: "Facturación por lotes", path: "/facturacion-lotes", icon: Receipt },
-          { name: "Conceptos de Facturación", path: "/facturacion-conceptos", icon: Calculator },
-          { name: "Configuración de Facturación", path: "/facturacion-config", icon: Settings },
+          { name: "Unidades", path: "/unidades", icon: Package },
+          { name: "Facturación", path: "/facturacion-lotes", icon: Receipt },
+          { name: "Conceptos", path: "/facturacion-conceptos", icon: Calculator },
+          { name: "Configuración", path: "/facturacion-config", icon: Settings },
+          { name: "Reportes", path: "/facturacion-reportes", icon: BarChart3 },
         ],
       },
       {
