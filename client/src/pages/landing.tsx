@@ -51,6 +51,17 @@ export default function Landing() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Smooth scroll function
+  const scrollToPricing = () => {
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   // Animation refs
   const heroRef = useRef(null);
   const featuresRef = useRef(null);
@@ -150,6 +161,41 @@ export default function Landing() {
     }
   }, [isAuthenticated, user, setLocation]);
 
+  // Ensure mobile menu button is visible immediately on mobile devices
+  React.useEffect(() => {
+    const updateMobileMenuVisibility = () => {
+      const mobileButton = document.querySelector('.mobile-menu-button') as HTMLButtonElement;
+      if (mobileButton) {
+        const isDesktop = window.innerWidth >= 1024;
+        if (isDesktop) {
+          mobileButton.style.display = 'none';
+          mobileButton.style.visibility = 'hidden';
+        } else {
+          mobileButton.style.display = 'block';
+          mobileButton.style.visibility = 'visible';
+          mobileButton.style.opacity = '1';
+          // Force visibility with !important-like behavior
+          mobileButton.setAttribute('style',
+            'display: block !important; visibility: visible !important; opacity: 1 !important;'
+          );
+        }
+      }
+    };
+
+    // Run multiple times to ensure it works
+    updateMobileMenuVisibility();
+    setTimeout(updateMobileMenuVisibility, 0);
+    setTimeout(updateMobileMenuVisibility, 50);
+    setTimeout(updateMobileMenuVisibility, 100);
+    setTimeout(updateMobileMenuVisibility, 200);
+
+    window.addEventListener('resize', updateMobileMenuVisibility);
+
+    return () => {
+      window.removeEventListener('resize', updateMobileMenuVisibility);
+    };
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -171,6 +217,61 @@ export default function Landing() {
     { number: "99.9%", label: "Tiempo de actividad", icon: Shield },
     { number: "24/7", label: "Soporte técnico", icon: Users },
     { number: "50%", label: "Ahorro en tiempo administrativo", icon: Clock }
+  ];
+
+  const pricingPlans = [
+    {
+      name: "Básico",
+      price: "$49.900",
+      period: "/mes",
+      description: "Perfecto para copropiedades pequeñas",
+      features: [
+        "Hasta 50 unidades",
+        "Contabilidad básica",
+        "Gestión de pagos",
+        "Reportes mensuales",
+        "Soporte por email"
+      ],
+      buttonText: "Comenzar Gratis",
+      popular: false,
+      color: "blue"
+    },
+    {
+      name: "Profesional",
+      price: "$99.900",
+      period: "/mes",
+      description: "Ideal para copropiedades en crecimiento",
+      features: [
+        "Hasta 200 unidades",
+        "Contabilidad completa",
+        "Tesorería avanzada",
+        "Módulo de nómina",
+        "Reportes avanzados",
+        "Soporte prioritario",
+        "API integrada"
+      ],
+      buttonText: "Comenzar Ahora",
+      popular: true,
+      color: "orange"
+    },
+    {
+      name: "Empresarial",
+      price: "$199.900",
+      period: "/mes",
+      description: "Para grandes complejos residenciales",
+      features: [
+        "Unidades ilimitadas",
+        "Todas las funcionalidades",
+        "Módulos premium",
+        "Consultoría personalizada",
+        "Soporte 24/7",
+        "Implementación dedicada",
+        "Capacitación del equipo"
+      ],
+      buttonText: "Contactar Ventas",
+      popular: false,
+      color: "green"
+    }
   ];
 
   const features = [
@@ -274,21 +375,21 @@ export default function Landing() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8">
-              <a href="#features" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+              <a href="#features" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
                 Características
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="#testimonials" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
-                Testimonios
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+              <a href="/blog" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
+                Blog
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="#pricing" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+              <a href="#pricing" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
                 Precios
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="#faq" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+              <a href="#faq" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
                 FAQ
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
             </nav>
 
@@ -301,7 +402,7 @@ export default function Landing() {
                 Iniciar Sesión
               </Button>
               <Button
-                onClick={() => console.log("Solicitar demo")}
+                onClick={scrollToPricing}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-2 h-auto"
               >
                 Ver Planes
@@ -310,50 +411,80 @@ export default function Landing() {
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2"
+              className="mobile-menu-button p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+              style={{
+                display: 'block',
+                visibility: 'visible',
+                opacity: 1
+              }}
               onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Toggle mobile menu"
             >
               {showMobileMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
 
           {/* Mobile Menu */}
-          {showMobileMenu && (
-            <div className="lg:hidden py-4 border-t border-gray-200">
+          <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            showMobileMenu ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}>
+            <div className="py-4 border-t border-gray-200">
               <nav className="flex flex-col gap-4">
-                <a href="#features" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                <a
+                  href="#features"
+                  className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
                   Características
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
                 </a>
-                <a href="#testimonials" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
-                  Testimonios
+                <a
+                  href="/blog"
+                  className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Blog
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
                 </a>
-                <a href="#pricing" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                <a
+                  href="#pricing"
+                  className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
                   Precios
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
                 </a>
-                <a href="#faq" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                <a
+                  href="#faq"
+                  className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
                   FAQ
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
                 </a>
                 <div className="flex flex-col gap-2 pt-4">
                   <Button
-                    onClick={() => setShowLoginModal(true)}
-                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium px-6 py-2 h-auto"
-                  >
-                    Iniciar Sesión
-                  </Button>
-                  <Button
-                    onClick={() => console.log("Solicitar demo")}
+                    onClick={() => {
+                      scrollToPricing();
+                      setShowMobileMenu(false);
+                    }}
                     className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium"
                   >
                     Ver Planes
                   </Button>
+                  <Button
+                    onClick={() => {
+                      setShowLoginModal(true);
+                      setShowMobileMenu(false);
+                    }}
+                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium px-6 py-2 h-auto"
+                  >
+                    Iniciar Sesión
+                  </Button>
                 </div>
               </nav>
             </div>
-          )}
+          </div>
         </div>
       </header>
 
@@ -443,7 +574,7 @@ export default function Landing() {
                 >
                   <Button
                     size="lg"
-                    onClick={() => console.log("Solicitar demo")}
+                    onClick={scrollToPricing}
                     className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                   >
                     Ver Planes
@@ -824,214 +955,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <motion.h2
-              className="text-5xl font-bold text-gray-900 mb-6"
-              animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              style={{
-                background: "linear-gradient(45deg, #1f2937, #3b82f6, #1f2937)",
-                backgroundSize: "200% 200%",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text"
-              }}
-            >
-              Los clientes satisfechos siempre vuelven
-            </motion.h2>
-            <motion.p
-              className="text-xl text-gray-600"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              Historias reales de copropiedades que transformaron su gestión con GRAVY
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            className="grid md:grid-cols-3 gap-8 mb-16"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                className="bg-gray-50 rounded-2xl p-8 border border-gray-100"
-                variants={itemVariants}
-                whileHover={{
-                  scale: 1.05,
-                  y: -10,
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-                  transition: { duration: 0.3 }
-                }}
-                animate={floatingAnimation}
-              >
-                <motion.div
-                  className="flex items-center gap-1 mb-6"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  viewport={{ once: true }}
-                >
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: i * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                    </motion.div>
-                  ))}
-                </motion.div>
-                <motion.p
-                  className="text-gray-700 mb-8 leading-relaxed italic text-lg"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  viewport={{ once: true }}
-                >
-                  "{testimonial.content}"
-                </motion.p>
-                <motion.div
-                  className="flex items-center gap-4"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  viewport={{ once: true }}
-                >
-                  <motion.div
-                    className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                    whileHover={{
-                      scale: 1.1,
-                      rotate: [0, -10, 10, 0],
-                      transition: { duration: 0.3 }
-                    }}
-                    animate={{
-                      boxShadow: [
-                        "0 0 0 0 rgba(59, 130, 246, 0.4)",
-                        "0 0 0 10px rgba(59, 130, 246, 0)",
-                        "0 0 0 0 rgba(59, 130, 246, 0)"
-                      ]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: index * 0.5
-                    }}
-                  >
-                    {testimonial.avatar}
-                  </motion.div>
-                  <div>
-                    <motion.div
-                      className="font-semibold text-gray-900 text-lg"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ duration: 0.4, delay: 0.5 }}
-                      viewport={{ once: true }}
-                    >
-                      {testimonial.name}
-                    </motion.div>
-                    <motion.div
-                      className="text-sm text-gray-600"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ duration: 0.4, delay: 0.6 }}
-                      viewport={{ once: true }}
-                    >
-                      {testimonial.role}
-                    </motion.div>
-                    <motion.div
-                      className="text-sm text-gray-500"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ duration: 0.4, delay: 0.7 }}
-                      viewport={{ once: true }}
-                    >
-                      {testimonial.company}
-                    </motion.div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Trust Indicators */}
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <motion.div
-              className="inline-flex items-center gap-4 bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-                transition: { duration: 0.3 }
-              }}
-              animate={pulseAnimation}
-            >
-              <motion.div
-                className="flex items-center gap-1"
-                animate={{
-                  scale: [1, 1.05, 1],
-                  transition: { duration: 2, repeat: Infinity }
-                }}
-              >
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <motion.div
-                    key={star}
-                    animate={{
-                      rotate: [0, 10, -10, 0],
-                      transition: { duration: 2, repeat: Infinity, delay: star * 0.1 }
-                    }}
-                  >
-                    <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                  </motion.div>
-                ))}
-              </motion.div>
-              <div className="text-left">
-                <motion.div
-                  className="font-semibold text-gray-900"
-                  animate={{ scale: [1, 1.02, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  4.9/5 estrellas
-                </motion.div>
-                <motion.div
-                  className="text-sm text-gray-600"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                  viewport={{ once: true }}
-                >
-                  Basado en +200 reseñas
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
+      {/* Pricing Section */}
       <section className="py-24 bg-gradient-to-r from-blue-600 to-blue-700 relative overflow-hidden">
         {/* Background Pattern */}
         <motion.div
@@ -1104,7 +1028,7 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  onClick={() => console.log("Solicitar demo")}
+                  onClick={scrollToPricing}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   Ver Planes
@@ -1181,8 +1105,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section id="faq" className="py-24 bg-gray-50">
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 bg-gray-50">
         <div className="container mx-auto px-6">
           <motion.div
             className="text-center mb-20"
@@ -1205,7 +1129,7 @@ export default function Landing() {
                 backgroundClip: "text"
               }}
             >
-              ¿Tienes dudas? ¡Te las aclaramos!
+              Planes y Precios
             </motion.h2>
             <motion.p
               className="text-xl text-gray-600"
@@ -1214,79 +1138,98 @@ export default function Landing() {
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              Resolvemos todas tus preguntas sobre GRAVY
+              Elige el plan perfecto para tu copropiedad
             </motion.p>
           </motion.div>
 
-          <div className="max-w-4xl mx-auto">
-            {faqs.map((faq, index) => (
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {pricingPlans.map((plan, index) => (
               <motion.div
                 key={index}
-                className="mb-6"
-                initial={{ opacity: 0, y: 30 }}
+                className={`relative bg-white rounded-2xl shadow-lg border-2 ${
+                  plan.popular ? 'border-orange-500 scale-105' : 'border-gray-200'
+                } p-8 transition-all duration-300 hover:shadow-2xl`}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
-                <motion.div
-                  className="bg-white rounded-xl p-8 shadow-sm border border-gray-100"
-                  whileHover={{
-                    scale: 1.02,
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-                    transition: { duration: 0.3 }
-                  }}
-                  animate={floatingAnimation}
-                >
-                  <div className="flex items-start gap-4">
-                    <motion.div
-                      className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                      whileHover={{
-                        scale: 1.1,
-                        rotate: [0, -10, 10, 0],
-                        transition: { duration: 0.3 }
-                      }}
-                      animate={{
-                        boxShadow: [
-                          "0 0 0 0 rgba(59, 130, 246, 0.4)",
-                          "0 0 0 8px rgba(59, 130, 246, 0)",
-                          "0 0 0 0 rgba(59, 130, 246, 0)"
-                        ]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: index * 0.3
-                      }}
+                {plan.popular && (
+                  <motion.div
+                    className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-medium"
+                    animate={{
+                      scale: [1, 1.05, 1],
+                      transition: { duration: 2, repeat: Infinity }
+                    }}
+                  >
+                    Más Popular
+                  </motion.div>
+                )}
+
+                <div className="text-center mb-8">
+                  <motion.h3
+                    className="text-2xl font-bold text-gray-900 mb-4"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {plan.name}
+                  </motion.h3>
+                  <div className="flex items-baseline justify-center mb-2">
+                    <motion.span
+                      className="text-5xl font-bold text-gray-900"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.3 }}
                     >
-                      {index + 1}
-                    </motion.div>
-                    <div className="flex-1">
-                      <motion.h3
-                        className="text-xl font-semibold text-gray-900 mb-4"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        viewport={{ once: true }}
-                      >
-                        {faq.question}
-                      </motion.h3>
-                      <motion.p
-                        className="text-gray-600 leading-relaxed"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        viewport={{ once: true }}
-                      >
-                        {faq.answer}
-                      </motion.p>
-                    </div>
+                      {plan.price}
+                    </motion.span>
+                    <span className="text-gray-600 ml-2">{plan.period}</span>
                   </div>
+                  <p className="text-gray-600">{plan.description}</p>
+                </div>
+
+                <ul className="space-y-4 mb-8">
+                  {plan.features.map((feature, featureIndex) => (
+                    <motion.li
+                      key={featureIndex}
+                      className="flex items-center gap-3"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: featureIndex * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: featureIndex * 0.3 }}
+                      >
+                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      </motion.div>
+                      <span className="text-gray-700">{feature}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    onClick={() => plan.name === "Empresarial" ? console.log("Contactar ventas") : setShowLoginModal(true)}
+                    className={`w-full ${
+                      plan.color === 'orange'
+                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
+                        : plan.color === 'green'
+                        ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                        : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
+                    } text-white font-medium py-3 px-6 h-auto transition-all duration-300 shadow-lg hover:shadow-xl`}
+                  >
+                    {plan.buttonText}
+                  </Button>
                 </motion.div>
               </motion.div>
             ))}
           </div>
 
-          {/* Additional CTA */}
           <motion.div
             className="text-center mt-16"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -1310,7 +1253,7 @@ export default function Landing() {
                 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
-                ¿Todavía tienes preguntas?
+                ¿Necesitas un plan personalizado?
               </motion.h3>
               <motion.p
                 className="text-gray-600 mb-6"
@@ -1319,21 +1262,21 @@ export default function Landing() {
                 transition={{ duration: 0.5, delay: 0.8 }}
                 viewport={{ once: true }}
               >
-                Nuestro equipo de soporte está listo para ayudarte
+                Contáctanos para crear una solución a medida para tu copropiedad
               </motion.p>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Button
-                  onClick={() => console.log("Contactar soporte")}
+                  onClick={() => console.log("Contactar ventas personalizado")}
                   className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium px-6 py-3 h-auto"
                 >
                   <motion.span
                     animate={{ opacity: [1, 0.7, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    Contactar Soporte
+                    Contactar Ventas
                   </motion.span>
                 </Button>
               </motion.div>
@@ -1416,7 +1359,7 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  onClick={() => console.log("Empezar ahora")}
+                  onClick={scrollToPricing}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   Ver Planes
@@ -1624,7 +1567,7 @@ export default function Landing() {
               >
                 {[
                   { href: "#", text: "Sobre nosotros" },
-                  { href: "#", text: "Blog" },
+                  { href: "/blog", text: "Blog" },
                   { href: "#", text: "Carreras" },
                   { href: "#", text: "Prensa" }
                 ].map((item, index) => (

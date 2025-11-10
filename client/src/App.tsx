@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { useAuth, AuthProvider } from "@/contexts/auth-context";
 import Landing from "@/pages/landing";
+import Blog from "@/pages/blog";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import Suscriptores from "@/pages/suscriptores";
@@ -76,6 +77,7 @@ function AppContent() {
           <Switch>
             {/* Landing page pública */}
             <Route path="/landing" component={Landing} />
+            <Route path="/blog" component={Blog} />
 
             {/* Rutas autenticadas */}
             <Route path="/">
