@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useAnimation, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Building2,
@@ -49,6 +50,98 @@ export default function Landing() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Animation refs
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const ctaRef = useRef(null);
+  const faqRef = useRef(null);
+
+  // Animation controls
+  const heroInView = useInView(heroRef, { once: true, margin: "-100px" });
+  const featuresInView = useInView(featuresRef, { once: true, margin: "-100px" });
+  const testimonialsInView = useInView(testimonialsRef, { once: true, margin: "-100px" });
+  const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" });
+  const faqInView = useInView(faqRef, { once: true, margin: "-100px" });
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    }
+  };
+
+  const slideInLeft = {
+    hidden: { opacity: 0, x: -100 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    }
+  };
+
+  const slideInRight = {
+    hidden: { opacity: 0, x: 100 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    }
+  };
+
+  const scaleIn = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    }
+  };
+
+  const floatingAnimation = {
+    y: [0, -10, 0],
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  };
+
+  const pulseAnimation = {
+    scale: [1, 1.05, 1],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  };
 
   // Redirect if already authenticated
   React.useEffect(() => {
@@ -243,111 +336,245 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-16 min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center relative overflow-hidden">
+      <section ref={heroRef} className="pt-16 min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent"></div>
-        <div className="absolute top-20 right-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl"></div>
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent"
+          animate={{
+            background: [
+              "linear-gradient(to bottom right, rgba(248, 250, 252, 0.5), transparent)",
+              "linear-gradient(to bottom right, rgba(239, 246, 255, 0.7), transparent)",
+              "linear-gradient(to bottom right, rgba(248, 250, 252, 0.5), transparent)"
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-20 right-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl"
+          animate={floatingAnimation}
+        />
+        <motion.div
+          className="absolute bottom-20 left-10 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl"
+          animate={{
+            ...floatingAnimation,
+            transition: { ...floatingAnimation.transition, delay: 1 }
+          }}
+        />
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <motion.div
+            className="grid lg:grid-cols-2 gap-16 items-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate={heroInView ? "visible" : "hidden"}
+          >
             {/* Content */}
-            <div className="space-y-8">
+            <motion.div className="space-y-8" variants={itemVariants}>
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
-                  <Zap className="h-4 w-4" />
+                <motion.div
+                  className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium"
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 2 }}
+                  >
+                    <Zap className="h-4 w-4" />
+                  </motion.div>
                   Tecnología de vanguardia para copropiedades
-                </div>
-                <h1 className="text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
+                </motion.div>
+                <motion.h1
+                  className="text-6xl lg:text-7xl font-bold text-gray-900 leading-tight"
+                  variants={itemVariants}
+                >
                   Gestiona tu
-                  <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent block">
+                  <motion.span
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent block"
+                    animate={{
+                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  >
                     copropiedad
-                  </span>
+                  </motion.span>
                   como nunca antes
-                </h1>
-                <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                </motion.h1>
+                <motion.p
+                  className="text-xl text-gray-600 leading-relaxed max-w-lg"
+                  variants={itemVariants}
+                >
                   Automatiza la contabilidad, optimiza la tesorería y mejora la comunicación
                   con propietarios. Todo en una plataforma integrada y fácil de usar.
-                </p>
+                </motion.p>
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  onClick={() => console.log("Solicitar demo")}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg px-8 py-4 h-auto font-medium"
+              <motion.div
+                className="flex flex-col sm:flex-row gap-4"
+                variants={itemVariants}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Comenzar Ahora
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => setShowLoginModal(true)}
-                  className="border-2 border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium"
+                  <Button
+                    size="lg"
+                    onClick={() => console.log("Solicitar demo")}
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  >
+                    Comenzar Ahora
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </motion.div>
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Play className="mr-2 h-5 w-5" />
-                  Ver Demo
-                </Button>
-              </div>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => setShowLoginModal(true)}
+                    className="border-2 border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium hover:shadow-lg transition-all duration-300"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Play className="mr-2 h-5 w-5" />
+                    </motion.div>
+                    Ver Demo
+                  </Button>
+                </motion.div>
+              </motion.div>
 
               {/* Social Proof */}
-              <div className="flex items-center gap-6 pt-4">
-                <div className="flex -space-x-2">
+              <motion.div
+                className="flex items-center gap-6 pt-4"
+                variants={itemVariants}
+              >
+                <motion.div
+                  className="flex -space-x-2"
+                  whileHover={{ scale: 1.05 }}
+                >
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-white flex items-center justify-center text-white text-sm font-medium">
+                    <motion.div
+                      key={i}
+                      className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-white flex items-center justify-center text-white text-sm font-medium"
+                      whileHover={{
+                        scale: 1.2,
+                        rotate: [0, -10, 10, 0],
+                        transition: { duration: 0.3 }
+                      }}
+                      animate={{
+                        y: [0, -5, 0],
+                        transition: { duration: 2, repeat: Infinity, delay: i * 0.2 }
+                      }}
+                    >
                       {String.fromCharCode(65 + i)}
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
-                <div className="text-sm text-gray-600">
+                </motion.div>
+                <motion.div
+                  className="text-sm text-gray-600"
+                  animate={pulseAnimation}
+                >
                   <div className="font-semibold text-gray-900">+500 copropiedades</div>
                   confían en GRAVY
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
 
             {/* Hero Image */}
-            <div className="relative">
-              <div className="relative z-10 bg-white rounded-2xl shadow-2xl p-8 transform hover:scale-105 transition-transform duration-500">
-                <img
+            <motion.div
+              className="relative"
+              variants={slideInRight}
+            >
+              <motion.div
+                className="relative z-10 bg-white rounded-2xl shadow-2xl p-8"
+                whileHover={{
+                  scale: 1.05,
+                  rotateY: 5,
+                  transition: { duration: 0.3 }
+                }}
+                animate={floatingAnimation}
+              >
+                <motion.img
                   src={buildingImage}
                   alt="Dashboard GRAVY"
                   className="w-full h-96 object-cover rounded-xl"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 />
-                <div className="absolute -top-4 -right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                <motion.div
+                  className="absolute -top-4 -right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1"
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    transition: { duration: 2, repeat: Infinity }
+                  }}
+                >
                   <CheckCircle className="h-4 w-4" />
                   Sistema Activo
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
               {/* Floating Cards */}
-              <div className="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-lg p-4 transform hover:scale-105 transition-transform duration-300 border border-gray-100">
+              <motion.div
+                className="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-lg p-4 border border-gray-100"
+                animate={floatingAnimation}
+                whileHover={{
+                  scale: 1.1,
+                  rotate: [0, -5, 5, 0],
+                  transition: { duration: 0.3 }
+                }}
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <motion.div
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  >
                     <TrendingUp className="h-5 w-5 text-green-600" />
-                  </div>
+                  </motion.div>
                   <div>
                     <div className="font-semibold text-gray-900">+35% eficiencia</div>
                     <div className="text-sm text-gray-600">en procesos administrativos</div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="absolute -top-8 -right-8 bg-white rounded-xl shadow-lg p-4 transform hover:scale-105 transition-transform duration-300 border border-gray-100">
+              <motion.div
+                className="absolute -top-8 -right-8 bg-white rounded-xl shadow-lg p-4 border border-gray-100"
+                animate={{
+                  ...floatingAnimation,
+                  transition: { ...floatingAnimation.transition, delay: 1.5 }
+                }}
+                whileHover={{
+                  scale: 1.1,
+                  rotate: [0, 5, -5, 0],
+                  transition: { duration: 0.3 }
+                }}
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
                     <Shield className="h-5 w-5 text-blue-600" />
-                  </div>
+                  </motion.div>
                   <div>
                     <div className="font-semibold text-gray-900">99.9% uptime</div>
                     <div className="text-sm text-gray-600">disponibilidad garantizada</div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* Stats Section - Integrated into Hero */}
           <div className="mt-20 pt-16 border-t border-gray-200">
@@ -378,49 +605,199 @@ export default function Landing() {
       {/* Features Section */}
       <section id="features" className="py-24 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <motion.div
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2
+              className="text-5xl font-bold text-gray-900 mb-6"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                background: "linear-gradient(45deg, #1f2937, #3b82f6, #1f2937)",
+                backgroundSize: "200% 200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text"
+              }}
+            >
               Lo hacemos por ti
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               Una plataforma integrada con inteligencia artificial para la gestión integral de copropiedades
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <div className="space-y-24">
             {features.map((feature, index) => (
-              <div key={index} className={`grid lg:grid-cols-2 gap-16 items-center ${index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''}`}>
-                <div className={`space-y-8 ${index % 2 === 1 ? 'lg:col-start-2' : ''}`}>
+              <motion.div
+                key={index}
+                className={`grid lg:grid-cols-2 gap-16 items-center ${index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''}`}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true }}
+              >
+                <motion.div
+                  className={`space-y-8 ${index % 2 === 1 ? 'lg:col-start-2' : ''}`}
+                  variants={index % 2 === 0 ? slideInLeft : slideInRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                >
                   <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
-                      <feature.icon className="h-4 w-4" />
+                    <motion.div
+                      className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium"
+                      whileHover={{
+                        scale: 1.05,
+                        backgroundColor: "#dbeafe"
+                      }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
+                      >
+                        <feature.icon className="h-4 w-4" />
+                      </motion.div>
                       Característica destacada
-                    </div>
-                    <h3 className="text-4xl font-bold text-gray-900">{feature.title}</h3>
-                    <p className="text-xl text-gray-600 leading-relaxed">{feature.description}</p>
+                    </motion.div>
+                    <motion.h3
+                      className="text-4xl font-bold text-gray-900"
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {feature.title}
+                    </motion.h3>
+                    <motion.p
+                      className="text-xl text-gray-600 leading-relaxed"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.6, delay: 0.3 }}
+                      viewport={{ once: true }}
+                    >
+                      {feature.description}
+                    </motion.p>
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900">Beneficios principales:</h4>
-                    <ul className="space-y-3">
+                    <motion.h4
+                      className="text-lg font-semibold text-gray-900"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
+                      viewport={{ once: true }}
+                    >
+                      Beneficios principales:
+                    </motion.h4>
+                    <motion.ul
+                      className="space-y-3"
+                      variants={containerVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                    >
                       {feature.benefits.map((benefit, idx) => (
-                        <li key={idx} className="flex items-center gap-3 text-gray-700">
-                          <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                        <motion.li
+                          key={idx}
+                          className="flex items-center gap-3 text-gray-700"
+                          variants={itemVariants}
+                          whileHover={{
+                            x: 10,
+                            transition: { duration: 0.2 }
+                          }}
+                        >
+                          <motion.div
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3 }}
+                          >
+                            <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                          </motion.div>
                           {benefit}
-                        </li>
+                        </motion.li>
                       ))}
-                    </ul>
+                    </motion.ul>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className={`relative ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
-                  <div className="bg-white rounded-2xl shadow-2xl p-8 transform hover:scale-105 transition-transform duration-500">
-                    <div className="w-full h-80 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center">
-                      <feature.icon className="h-24 w-24 text-blue-600" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <motion.div
+                  className={`relative ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}
+                  variants={index % 2 === 0 ? slideInRight : slideInLeft}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                >
+                  <motion.div
+                    className="bg-white rounded-2xl shadow-2xl p-8"
+                    whileHover={{
+                      scale: 1.05,
+                      rotateY: index % 2 === 0 ? 5 : -5,
+                      transition: { duration: 0.3 }
+                    }}
+                    animate={floatingAnimation}
+                  >
+                    <motion.div
+                      className="w-full h-80 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center"
+                      whileHover={{
+                        background: "linear-gradient(to bottom right, #dbeafe, #bfdbfe)",
+                        transition: { duration: 0.3 }
+                      }}
+                    >
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          rotate: [0, 5, -5, 0]
+                        }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: index * 0.5
+                        }}
+                      >
+                        <feature.icon className="h-24 w-24 text-blue-600" />
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+
+                  {/* Floating accent elements */}
+                  <motion.div
+                    className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.7, 1, 0.7]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: index * 0.3
+                    }}
+                  />
+                  <motion.div
+                    className="absolute -bottom-4 -left-4 w-6 h-6 bg-green-500 rounded-full"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: index * 0.7
+                    }}
+                  />
+                </motion.div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -429,271 +806,880 @@ export default function Landing() {
       {/* Testimonials Section */}
       <section id="testimonials" className="py-24 bg-white">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <motion.div
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2
+              className="text-5xl font-bold text-gray-900 mb-6"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                background: "linear-gradient(45deg, #1f2937, #3b82f6, #1f2937)",
+                backgroundSize: "200% 200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text"
+              }}
+            >
               Los clientes satisfechos siempre vuelven
-            </h2>
-            <p className="text-xl text-gray-600">
+            </motion.h2>
+            <motion.p
+              className="text-xl text-gray-600"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               Historias reales de copropiedades que transformaron su gestión con GRAVY
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <motion.div
+            className="grid md:grid-cols-3 gap-8 mb-16"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
-                <div className="flex items-center gap-1 mb-6">
+              <motion.div
+                key={index}
+                className="bg-gray-50 rounded-2xl p-8 border border-gray-100"
+                variants={itemVariants}
+                whileHover={{
+                  scale: 1.05,
+                  y: -10,
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.3 }
+                }}
+                animate={floatingAnimation}
+              >
+                <motion.div
+                  className="flex items-center gap-1 mb-6"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  viewport={{ once: true }}
+                >
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: i * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <Star className="h-5 w-5 text-yellow-400 fill-current" />
+                    </motion.div>
                   ))}
-                </div>
-                <p className="text-gray-700 mb-8 leading-relaxed italic text-lg">
+                </motion.div>
+                <motion.p
+                  className="text-gray-700 mb-8 leading-relaxed italic text-lg"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
                   "{testimonial.content}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                </motion.p>
+                <motion.div
+                  className="flex items-center gap-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  viewport={{ once: true }}
+                >
+                  <motion.div
+                    className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                    whileHover={{
+                      scale: 1.1,
+                      rotate: [0, -10, 10, 0],
+                      transition: { duration: 0.3 }
+                    }}
+                    animate={{
+                      boxShadow: [
+                        "0 0 0 0 rgba(59, 130, 246, 0.4)",
+                        "0 0 0 10px rgba(59, 130, 246, 0)",
+                        "0 0 0 0 rgba(59, 130, 246, 0)"
+                      ]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: index * 0.5
+                    }}
+                  >
                     {testimonial.avatar}
-                  </div>
+                  </motion.div>
                   <div>
-                    <div className="font-semibold text-gray-900 text-lg">{testimonial.name}</div>
-                    <div className="text-sm text-gray-600">{testimonial.role}</div>
-                    <div className="text-sm text-gray-500">{testimonial.company}</div>
+                    <motion.div
+                      className="font-semibold text-gray-900 text-lg"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.5 }}
+                      viewport={{ once: true }}
+                    >
+                      {testimonial.name}
+                    </motion.div>
+                    <motion.div
+                      className="text-sm text-gray-600"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.6 }}
+                      viewport={{ once: true }}
+                    >
+                      {testimonial.role}
+                    </motion.div>
+                    <motion.div
+                      className="text-sm text-gray-500"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.7 }}
+                      viewport={{ once: true }}
+                    >
+                      {testimonial.company}
+                    </motion.div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Trust Indicators */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-4 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-              <div className="flex items-center gap-1">
+          <motion.div
+            className="text-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="inline-flex items-center gap-4 bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+                transition: { duration: 0.3 }
+              }}
+              animate={pulseAnimation}
+            >
+              <motion.div
+                className="flex items-center gap-1"
+                animate={{
+                  scale: [1, 1.05, 1],
+                  transition: { duration: 2, repeat: Infinity }
+                }}
+              >
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-5 w-5 text-yellow-400 fill-current" />
+                  <motion.div
+                    key={star}
+                    animate={{
+                      rotate: [0, 10, -10, 0],
+                      transition: { duration: 2, repeat: Infinity, delay: star * 0.1 }
+                    }}
+                  >
+                    <Star className="h-5 w-5 text-yellow-400 fill-current" />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
               <div className="text-left">
-                <div className="font-semibold text-gray-900">4.9/5 estrellas</div>
-                <div className="text-sm text-gray-600">Basado en +200 reseñas</div>
+                <motion.div
+                  className="font-semibold text-gray-900"
+                  animate={{ scale: [1, 1.02, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  4.9/5 estrellas
+                </motion.div>
+                <motion.div
+                  className="text-sm text-gray-600"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  viewport={{ once: true }}
+                >
+                  Basado en +200 reseñas
+                </motion.div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-blue-600 to-blue-700 relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-700/50 to-blue-600/50"></div>
-        <div className="absolute top-10 right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-blue-700/50 to-blue-600/50"
+          animate={{
+            background: [
+              "linear-gradient(to bottom right, rgba(29, 78, 216, 0.5), rgba(37, 99, 235, 0.5))",
+              "linear-gradient(to bottom right, rgba(37, 99, 235, 0.7), rgba(29, 78, 216, 0.3))",
+              "linear-gradient(to bottom right, rgba(29, 78, 216, 0.5), rgba(37, 99, 235, 0.5))"
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-10 right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"
+          animate={floatingAnimation}
+        />
+        <motion.div
+          className="absolute bottom-10 left-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"
+          animate={{
+            ...floatingAnimation,
+            transition: { ...floatingAnimation.transition, delay: 2 }
+          }}
+        />
 
         <div className="container mx-auto px-6 text-center relative z-10">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-5xl font-bold text-white mb-6">
+          <motion.div
+            className="max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2
+              className="text-5xl font-bold text-white mb-6"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              animate={{
+                textShadow: [
+                  "0 0 20px rgba(255,255,255,0.3)",
+                  "0 0 30px rgba(255,255,255,0.5)",
+                  "0 0 20px rgba(255,255,255,0.3)"
+                ]
+              }}
+            >
               ¿Tienes dudas? ¡Te las aclaramos!
-            </h2>
-            <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
               Crea tu cuenta gratis y únete a la plataforma más avanzada de gestión de copropiedades en Colombia
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-              <Button
-                size="lg"
-                onClick={() => console.log("Solicitar demo")}
-                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 h-auto font-medium"
+            <motion.div
+              className="flex flex-col sm:flex-row gap-6 justify-center mb-12"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Comenzar Ahora
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => setShowLoginModal(true)}
-                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium"
+                <Button
+                  size="lg"
+                  onClick={() => console.log("Solicitar demo")}
+                  className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                  Comenzar Ahora
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </motion.div>
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <Play className="mr-2 h-5 w-5" />
-                Ver Demo
-              </Button>
-            </div>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => setShowLoginModal(true)}
+                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium hover:shadow-lg transition-all duration-300"
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <Play className="mr-2 h-5 w-5" />
+                  </motion.div>
+                  Ver Demo
+                </Button>
+              </motion.div>
+            </motion.div>
 
             {/* FAQ Preview */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <motion.div
+              className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
               {faqs.slice(0, 4).map((faq, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-colors duration-300">
-                  <h3 className="text-lg font-semibold text-white mb-3">{faq.question}</h3>
-                  <p className="text-blue-100 leading-relaxed text-sm">{faq.answer.substring(0, 100)}...</p>
-                </div>
+                <motion.div
+                  key={index}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
+                  variants={itemVariants}
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    transition: { duration: 0.3 }
+                  }}
+                  animate={floatingAnimation}
+                >
+                  <motion.h3
+                    className="text-lg font-semibold text-white mb-3"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    viewport={{ once: true }}
+                  >
+                    {faq.question}
+                  </motion.h3>
+                  <motion.p
+                    className="text-blue-100 leading-relaxed text-sm"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    viewport={{ once: true }}
+                  >
+                    {faq.answer.substring(0, 100)}...
+                  </motion.p>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section id="faq" className="py-24 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <motion.div
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2
+              className="text-5xl font-bold text-gray-900 mb-6"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                background: "linear-gradient(45deg, #1f2937, #3b82f6, #1f2937)",
+                backgroundSize: "200% 200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text"
+              }}
+            >
               ¿Tienes dudas? ¡Te las aclaramos!
-            </h2>
-            <p className="text-xl text-gray-600">
+            </motion.h2>
+            <motion.p
+              className="text-xl text-gray-600"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               Resolvemos todas tus preguntas sobre GRAVY
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <div className="max-w-4xl mx-auto">
             {faqs.map((faq, index) => (
-              <div key={index} className="mb-6">
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+              <motion.div
+                key={index}
+                className="mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <motion.div
+                  className="bg-white rounded-xl p-8 shadow-sm border border-gray-100"
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+                    transition: { duration: 0.3 }
+                  }}
+                  animate={floatingAnimation}
+                >
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <motion.div
+                      className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                      whileHover={{
+                        scale: 1.1,
+                        rotate: [0, -10, 10, 0],
+                        transition: { duration: 0.3 }
+                      }}
+                      animate={{
+                        boxShadow: [
+                          "0 0 0 0 rgba(59, 130, 246, 0.4)",
+                          "0 0 0 8px rgba(59, 130, 246, 0)",
+                          "0 0 0 0 rgba(59, 130, 246, 0)"
+                        ]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: index * 0.3
+                      }}
+                    >
                       {index + 1}
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">{faq.question}</h3>
-                      <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                      <motion.h3
+                        className="text-xl font-semibold text-gray-900 mb-4"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        viewport={{ once: true }}
+                      >
+                        {faq.question}
+                      </motion.h3>
+                      <motion.p
+                        className="text-gray-600 leading-relaxed"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        viewport={{ once: true }}
+                      >
+                        {faq.answer}
+                      </motion.p>
                     </div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             ))}
           </div>
 
           {/* Additional CTA */}
-          <div className="text-center mt-16">
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                ¿Todavía tienes preguntas?
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Nuestro equipo de soporte está listo para ayudarte
-              </p>
-              <Button
-                onClick={() => console.log("Contactar soporte")}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium"
+          <motion.div
+            className="text-center mt-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 max-w-2xl mx-auto"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                transition: { duration: 0.3 }
+              }}
+              animate={pulseAnimation}
+            >
+              <motion.h3
+                className="text-2xl font-bold text-gray-900 mb-4"
+                animate={{
+                  color: ["#1f2937", "#3b82f6", "#1f2937"]
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               >
-                Contactar Soporte
-              </Button>
-            </div>
-          </div>
+                ¿Todavía tienes preguntas?
+              </motion.h3>
+              <motion.p
+                className="text-gray-600 mb-6"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                viewport={{ once: true }}
+              >
+                Nuestro equipo de soporte está listo para ayudarte
+              </motion.p>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  onClick={() => console.log("Contactar soporte")}
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium px-6 py-3 h-auto"
+                >
+                  <motion.span
+                    animate={{ opacity: [1, 0.7, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    Contactar Soporte
+                  </motion.span>
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Final CTA Section */}
       <section className="py-24 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
-        </div>
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              "linear-gradient(to bottom right, #2563eb, #1d4ed8, #1e40af)",
+              "linear-gradient(to bottom right, #1d4ed8, #1e40af, #2563eb)",
+              "linear-gradient(to bottom right, #2563eb, #1d4ed8, #1e40af)"
+            ]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <motion.div
+            className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"
+            animate={floatingAnimation}
+          />
+          <motion.div
+            className="absolute bottom-0 right-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl"
+            animate={{
+              ...floatingAnimation,
+              transition: { ...floatingAnimation.transition, delay: 1 }
+            }}
+          />
+        </motion.div>
 
         <div className="container mx-auto px-6 text-center relative z-10">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-5xl font-bold text-white mb-6">
+          <motion.div
+            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2
+              className="text-5xl font-bold text-white mb-6"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              animate={{
+                textShadow: [
+                  "0 0 20px rgba(255,255,255,0.3)",
+                  "0 0 30px rgba(255,255,255,0.5)",
+                  "0 0 20px rgba(255,255,255,0.3)"
+                ]
+              }}
+            >
               Haz crecer tu copropiedad con el ecosistema que lo tiene todo
-            </h2>
-            <p className="text-xl text-blue-100 mb-12">
+            </motion.h2>
+            <motion.p
+              className="text-xl text-blue-100 mb-12"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
               Únete hoy y transforma la gestión de tu copropiedad con GRAVY
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button
-                size="lg"
-                onClick={() => console.log("Empezar ahora")}
-                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 h-auto font-medium"
+            <motion.div
+              className="flex flex-col sm:flex-row gap-6 justify-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Empezar Ahora
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => setShowLoginModal(true)}
-                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium"
+                <Button
+                  size="lg"
+                  onClick={() => console.log("Empezar ahora")}
+                  className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                  Empezar Ahora
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </motion.div>
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <Play className="mr-2 h-5 w-5" />
-                Ver Demo
-              </Button>
-            </div>
-          </div>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => setShowLoginModal(true)}
+                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium hover:shadow-lg transition-all duration-300"
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <Play className="mr-2 h-5 w-5" />
+                  </motion.div>
+                  Ver Demo
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-20">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-2xl">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="lg:col-span-2"
+              variants={itemVariants}
+            >
+              <motion.div
+                className="flex items-center gap-3 mb-6"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div
+                  className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-2xl"
+                  animate={{
+                    rotate: [0, 5, -5, 0],
+                    transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                  }}
+                >
                   G
-                </div>
-                <span className="text-3xl font-bold">GRAVY</span>
-              </div>
-              <p className="text-gray-400 mb-6 text-lg leading-relaxed max-w-md">
+                </motion.div>
+                <motion.span
+                  className="text-3xl font-bold"
+                  animate={{
+                    color: ["#ffffff", "#3b82f6", "#ffffff"]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  GRAVY
+                </motion.span>
+              </motion.div>
+              <motion.p
+                className="text-gray-400 mb-6 text-lg leading-relaxed max-w-md"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
                 La plataforma más avanzada para gestión integral de copropiedades en Colombia.
                 Tecnología de vanguardia para una administración eficiente.
-              </p>
-              <div className="flex gap-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg">
+              </motion.p>
+              <motion.div
+                className="flex gap-4"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                <motion.a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                  variants={itemVariants}
+                  whileHover={{
+                    scale: 1.1,
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                    transition: { duration: 0.2 }
+                  }}
+                >
                   <Globe className="h-6 w-6" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg">
+                </motion.a>
+                <motion.a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                  variants={itemVariants}
+                  whileHover={{
+                    scale: 1.1,
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                    transition: { duration: 0.2 }
+                  }}
+                >
                   <Award className="h-6 w-6" />
-                </a>
-              </div>
-            </div>
+                </motion.a>
+              </motion.div>
+            </motion.div>
 
-            <div>
-              <h3 className="font-semibold mb-6 text-lg">Producto</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li><a href="#features" className="hover:text-white transition-colors">Características</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Precios</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Integraciones</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
-              </ul>
-            </div>
+            <motion.div variants={itemVariants}>
+              <motion.h3
+                className="font-semibold mb-6 text-lg"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                viewport={{ once: true }}
+              >
+                Producto
+              </motion.h3>
+              <motion.ul
+                className="space-y-3 text-gray-400"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                {[
+                  { href: "#features", text: "Características" },
+                  { href: "#pricing", text: "Precios" },
+                  { href: "#", text: "Integraciones" },
+                  { href: "#", text: "API" }
+                ].map((item, index) => (
+                  <motion.li
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ x: 5, transition: { duration: 0.2 } }}
+                  >
+                    <a href={item.href} className="hover:text-white transition-colors">
+                      {item.text}
+                    </a>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
 
-            <div>
-              <h3 className="font-semibold mb-6 text-lg">Soporte</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Centro de Ayuda</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentación</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
-              </ul>
-            </div>
+            <motion.div variants={itemVariants}>
+              <motion.h3
+                className="font-semibold mb-6 text-lg"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Soporte
+              </motion.h3>
+              <motion.ul
+                className="space-y-3 text-gray-400"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                {[
+                  { href: "#", text: "Centro de Ayuda" },
+                  { href: "#", text: "Documentación" },
+                  { href: "#", text: "Contacto" },
+                  { href: "#", text: "Status" }
+                ].map((item, index) => (
+                  <motion.li
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ x: 5, transition: { duration: 0.2 } }}
+                  >
+                    <a href={item.href} className="hover:text-white transition-colors">
+                      {item.text}
+                    </a>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
 
-            <div>
-              <h3 className="font-semibold mb-6 text-lg">Empresa</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Sobre nosotros</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Carreras</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Prensa</a></li>
-              </ul>
-            </div>
-          </div>
+            <motion.div variants={itemVariants}>
+              <motion.h3
+                className="font-semibold mb-6 text-lg"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+              >
+                Empresa
+              </motion.h3>
+              <motion.ul
+                className="space-y-3 text-gray-400"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                {[
+                  { href: "#", text: "Sobre nosotros" },
+                  { href: "#", text: "Blog" },
+                  { href: "#", text: "Carreras" },
+                  { href: "#", text: "Prensa" }
+                ].map((item, index) => (
+                  <motion.li
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ x: 5, transition: { duration: 0.2 } }}
+                  >
+                    <a href={item.href} className="hover:text-white transition-colors">
+                      {item.text}
+                    </a>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
+          </motion.div>
 
-          <div className="border-t border-gray-800 pt-8">
+          <motion.div
+            className="border-t border-gray-800 pt-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
             <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
-              <div className="flex flex-wrap gap-6 text-sm text-gray-400">
-                <span>© 2024 GRAVY. Todos los derechos reservados.</span>
-                <span>Hecho con ❤️ en Colombia</span>
-              </div>
-              <div className="flex gap-6">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Privacidad
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Términos
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Cookies
-                </a>
-              </div>
+              <motion.div
+                className="flex flex-wrap gap-6 text-sm text-gray-400"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                <motion.span variants={itemVariants}>
+                  © 2024 GRAVY. Todos los derechos reservados.
+                </motion.span>
+                <motion.span
+                  variants={itemVariants}
+                  animate={{
+                    color: ["#9ca3af", "#f87171", "#9ca3af"]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  Hecho con ❤️ en Colombia
+                </motion.span>
+              </motion.div>
+              <motion.div
+                className="flex gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                {[
+                  { href: "#", text: "Privacidad" },
+                  { href: "#", text: "Términos" },
+                  { href: "#", text: "Cookies" }
+                ].map((item, index) => (
+                  <motion.a
+                    key={index}
+                    href={item.href}
+                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                    variants={itemVariants}
+                    whileHover={{
+                      scale: 1.05,
+                      color: "#ffffff",
+                      transition: { duration: 0.2 }
+                    }}
+                  >
+                    {item.text}
+                  </motion.a>
+                ))}
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </footer>
 
