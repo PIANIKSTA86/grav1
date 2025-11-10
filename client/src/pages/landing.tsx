@@ -274,10 +274,22 @@ export default function Landing() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Características</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Testimonios</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Precios</a>
-              <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">FAQ</a>
+              <a href="#features" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+                Características
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+              </a>
+              <a href="#testimonials" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+                Testimonios
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+              </a>
+              <a href="#pricing" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+                Precios
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+              </a>
+              <a href="#faq" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group">
+                FAQ
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+              </a>
             </nav>
 
             {/* CTA Buttons */}
@@ -292,7 +304,7 @@ export default function Landing() {
                 onClick={() => console.log("Solicitar demo")}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-2 h-auto"
               >
-                Ver planes
+                Ver Planes
               </Button>
             </div>
 
@@ -309,10 +321,22 @@ export default function Landing() {
           {showMobileMenu && (
             <div className="lg:hidden py-4 border-t border-gray-200">
               <nav className="flex flex-col gap-4">
-                <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Características</a>
-                <a href="#testimonials" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Testimonios</a>
-                <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">Precios</a>
-                <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">FAQ</a>
+                <a href="#features" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                  Características
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="#testimonials" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                  Testimonios
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="#pricing" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                  Precios
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="#faq" className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2">
+                  FAQ
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                </a>
                 <div className="flex flex-col gap-2 pt-4">
                   <Button
                     onClick={() => setShowLoginModal(true)}
@@ -324,7 +348,7 @@ export default function Landing() {
                     onClick={() => console.log("Solicitar demo")}
                     className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium"
                   >
-                    Ver planes
+                    Ver Planes
                   </Button>
                 </div>
               </nav>
@@ -422,7 +446,7 @@ export default function Landing() {
                     onClick={() => console.log("Solicitar demo")}
                     className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                   >
-                    Ver planes
+                    Ver Planes
                     <motion.div
                       animate={{ x: [0, 5, 0] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
@@ -1083,7 +1107,7 @@ export default function Landing() {
                   onClick={() => console.log("Solicitar demo")}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
-                  Ver planes
+                  Ver Planes
                   <motion.div
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
@@ -1395,7 +1419,7 @@ export default function Landing() {
                   onClick={() => console.log("Empezar ahora")}
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
-                  Empezar Ahora
+                  Ver Planes
                   <motion.div
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
