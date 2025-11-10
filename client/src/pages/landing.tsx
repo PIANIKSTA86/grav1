@@ -283,17 +283,16 @@ export default function Landing() {
             {/* CTA Buttons */}
             <div className="hidden lg:flex items-center gap-4">
               <Button
-                variant="ghost"
                 onClick={() => setShowLoginModal(true)}
-                className="text-gray-600 hover:text-blue-600 font-medium"
+                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium px-6 py-2 h-auto"
               >
                 Iniciar Sesión
               </Button>
               <Button
                 onClick={() => console.log("Solicitar demo")}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium px-6 py-2 h-auto"
+                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-2 h-auto"
               >
-                Solicitar Demo
+                Ver planes
               </Button>
             </div>
 
@@ -316,17 +315,16 @@ export default function Landing() {
                 <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">FAQ</a>
                 <div className="flex flex-col gap-2 pt-4">
                   <Button
-                    variant="ghost"
                     onClick={() => setShowLoginModal(true)}
-                    className="justify-start text-gray-600 hover:text-blue-600 font-medium"
+                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium px-6 py-2 h-auto"
                   >
                     Iniciar Sesión
                   </Button>
                   <Button
                     onClick={() => console.log("Solicitar demo")}
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium"
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium"
                   >
-                    Solicitar Demo
+                    Ver planes
                   </Button>
                 </div>
               </nav>
@@ -422,9 +420,9 @@ export default function Landing() {
                   <Button
                     size="lg"
                     onClick={() => console.log("Solicitar demo")}
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                   >
-                    Comenzar Ahora
+                    Ver planes
                     <motion.div
                       animate={{ x: [0, 5, 0] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
@@ -439,9 +437,8 @@ export default function Landing() {
                 >
                   <Button
                     size="lg"
-                    variant="outline"
                     onClick={() => setShowLoginModal(true)}
-                    className="border-2 border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium hover:shadow-lg transition-all duration-300"
+                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                   >
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
@@ -449,7 +446,7 @@ export default function Landing() {
                     >
                       <Play className="mr-2 h-5 w-5" />
                     </motion.div>
-                    Ver Demo
+                    Iniciar Sesión
                   </Button>
                 </motion.div>
               </motion.div>
@@ -1084,9 +1081,9 @@ export default function Landing() {
                 <Button
                   size="lg"
                   onClick={() => console.log("Solicitar demo")}
-                  className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
-                  Comenzar Ahora
+                  Ver planes
                   <motion.div
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
@@ -1101,9 +1098,8 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  variant="outline"
                   onClick={() => setShowLoginModal(true)}
-                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium hover:shadow-lg transition-all duration-300"
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
@@ -1111,7 +1107,7 @@ export default function Landing() {
                   >
                     <Play className="mr-2 h-5 w-5" />
                   </motion.div>
-                  Ver Demo
+                  Iniciar Sesión
                 </Button>
               </motion.div>
             </motion.div>
@@ -1397,7 +1393,7 @@ export default function Landing() {
                 <Button
                   size="lg"
                   onClick={() => console.log("Empezar ahora")}
-                  className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   Empezar Ahora
                   <motion.div
@@ -1414,9 +1410,8 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  variant="outline"
                   onClick={() => setShowLoginModal(true)}
-                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-4 h-auto font-medium hover:shadow-lg transition-all duration-300"
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-lg px-8 py-4 h-auto font-medium shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
@@ -1424,7 +1419,7 @@ export default function Landing() {
                   >
                     <Play className="mr-2 h-5 w-5" />
                   </motion.div>
-                  Ver Demo
+                  Iniciar Sesión
                 </Button>
               </motion.div>
             </motion.div>
