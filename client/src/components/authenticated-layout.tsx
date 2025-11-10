@@ -39,9 +39,9 @@ function AuthenticatedLayoutContent({ children }: AuthenticatedLayoutProps) {
               variant="ghost"
               size="sm"
               onClick={toggleSidebar}
-              className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="h-10 w-10 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              <Menu className="h-4 w-4" />
+              <Menu className="h-5 w-5" />
             </Button>
             <div className="flex flex-col">
               <span className="text-sm font-medium text-gray-900 dark:text-white">{suscriptorActual.nombre}</span>

@@ -1,4 +1,4 @@
-import { Home, Building2, Users, FileText, Receipt, Wallet, ClipboardList, DollarSign, Package, FileSpreadsheet, Settings, ChevronDown, ChevronRight, Briefcase, Calculator, Truck, Calendar, CalendarDays, MessageSquare, FolderOpen, TrendingDown, Banknote, BarChart3 } from "lucide-react";
+import { Home, Building2, Users, FileText, Receipt, Wallet, ClipboardList, DollarSign, Package, FileSpreadsheet, Settings, ChevronDown, ChevronRight, Briefcase, Calculator, Truck, Calendar, CalendarDays, MessageSquare, FolderOpen, TrendingDown, Banknote, BarChart3, CheckCircle, MapPin, Wrench, Trash2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useSidebar } from "@/contexts/sidebar-context";
@@ -83,8 +83,20 @@ const menuGroups: MenuGroup[] = [
       },
       {
         name: "Nómina",
-        path: "/nomina",
+        path: "#",
         icon: Briefcase,
+        subItems: [
+          { name: "Dashboard", path: "/nomina", icon: BarChart3 },
+          { name: "Configuración", path: "/nomina/configuracion", icon: Settings },
+          { name: "Empleados", path: "/nomina/empleados", icon: Users },
+          { name: "Parámetros", path: "/nomina/parametros", icon: Calculator },
+          { name: "Horas", path: "/nomina/horas", icon: CalendarDays },
+          { name: "Novedades", path: "/nomina/novedades", icon: FileText },
+          { name: "Cálculo", path: "/nomina/calculo", icon: Calculator },
+          { name: "Revisión", path: "/nomina/revision", icon: ClipboardList },
+          { name: "Aprobación", path: "/nomina/aprobacion", icon: CheckCircle },
+          { name: "Comprobantes", path: "/nomina/comprobantes", icon: Banknote },
+        ],
       },
     ],
   },
@@ -93,18 +105,37 @@ const menuGroups: MenuGroup[] = [
     items: [
       {
         name: "Presupuestos",
-        path: "/presupuestos",
+        path: "#",
         icon: DollarSign,
+        subItems: [
+          { name: "Ejecución", path: "/presupuestos/ejecucion", icon: BarChart3 },
+          { name: "Partidas", path: "/presupuestos/partidas", icon: FileSpreadsheet },
+          { name: "Reportes", path: "/presupuestos/reportes", icon: FileText },
+        ],
       },
       {
         name: "Activos Fijos",
-        path: "/activos-fijos",
+        path: "#",
         icon: Truck,
+        subItems: [
+          { name: "Catálogo", path: "/activos-fijos/catalogo", icon: Package },
+          { name: "Depreciación", path: "/activos-fijos/depreciacion", icon: TrendingDown },
+          { name: "Mantenimiento", path: "/activos-fijos/mtto", icon: Wrench },
+          { name: "Bajas", path: "/activos-fijos/bajas", icon: Trash2 },
+          { name: "Reportes", path: "/activos-fijos/reportes", icon: BarChart3 },
+          { name: "Configuración", path: "/activos-fijos/config", icon: Settings },
+        ],
       },
       {
         name: "Exógena",
-        path: "/exogena",
+        path: "#",
         icon: FileText,
+        subItems: [
+          { name: "Historial", path: "/exogena/historial", icon: FileText },
+          { name: "Formatos", path: "/exogena/formatos", icon: Settings },
+          { name: "Generación", path: "/exogena/generacion", icon: CheckCircle },
+          { name: "Avanzada", path: "/exogena/avanzada", icon: Settings },
+        ],
       },
     ],
   },
@@ -117,6 +148,7 @@ const menuGroups: MenuGroup[] = [
         icon: Users,
         subItems: [
           { name: "Reservas", path: "/reservas", icon: CalendarDays },
+          { name: "Zonas Comunes", path: "/zonas-comunes", icon: MapPin },
           { name: "Calendario", path: "/calendario", icon: Calendar },
           { name: "Gestión PQRS", path: "/pqrs", icon: MessageSquare },
           { name: "Gestión Documental", path: "/documentos", icon: FolderOpen },

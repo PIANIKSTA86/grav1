@@ -21,10 +21,32 @@ import { FacturacionConfig } from "@/pages/facturacion-config";
 import { FacturacionReportes } from "@/pages/facturacion-reportes";
 import { Recaudos } from "@/pages/recaudos";
 import Nomina from "@/pages/nomina";
+import NominaConfiguracion from "@/pages/nomina-configuracion";
+import NominaEmpleados from "@/pages/nomina-empleados";
+import NominaParametros from "@/pages/nomina-parametros";
+import NominaHoras from "@/pages/nomina-horas";
+import NominaNovedades from "@/pages/nomina-novedades";
+import NominaCalculo from "@/pages/nomina-calculo";
+import NominaRevision from "@/pages/nomina-revision";
+import NominaAprobacion from "@/pages/nomina-aprobacion";
+import NominaComprobantes from "@/pages/nomina-comprobantes";
 import Presupuestos from "@/pages/presupuestos";
+import PresupuestosEjecucion from "@/pages/presupuestos-ejecucion";
+import PresupuestosPartidas from "@/pages/presupuestos-partidas";
+import PresupuestosReportes from "@/pages/presupuestos-reportes";
 import ActivosFijos from "@/pages/activos-fijos";
-import Exogena from "@/pages/exogena";
+import ActivosFijosCatalogo from "@/pages/activos-fijos-catalogo";
+import ActivosFijosDepreciacion from "@/pages/activos-fijos-depreciacion";
+import ActivosFijosMtto from "@/pages/activos-fijos-mtto";
+import ActivosFijosBajas from "@/pages/activos-fijos-bajas";
+import ActivosFijosReportes from "@/pages/activos-fijos-reportes";
+import ActivosFijosConfig from "@/pages/activos-fijos-config";
+import ExogenaHistorial from "@/pages/exogena-historial";
+import ExogenaFormatos from "@/pages/exogena-formatos";
+import ExogenaGeneracion from "@/pages/exogena-generacion";
+import ExogenaAvanzada from "@/pages/exogena-avanzada";
 import { Reservas } from "@/pages/reservas";
+import ZonasComunes from "@/pages/zonas-comunes";
 import { Calendario } from "@/pages/calendario";
 import { Pqrs } from "@/pages/pqrs";
 import { Documentos } from "@/pages/documentos";
@@ -175,11 +197,107 @@ function AppContent() {
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
+
+            <Route path="/nomina/configuracion">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaConfiguracion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/empleados">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaEmpleados />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/parametros">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaParametros />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/horas">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaHoras />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/novedades">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaNovedades />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/calculo">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaCalculo />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/revision">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaRevision />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/aprobacion">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaAprobacion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/nomina/comprobantes">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <NominaComprobantes />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
             
             <Route path="/presupuestos">
               <ProtectedRoute>
                 <AuthenticatedLayout>
                   <Presupuestos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/presupuestos/ejecucion">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <PresupuestosEjecucion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/presupuestos/partidas">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <PresupuestosPartidas />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/presupuestos/reportes">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <PresupuestosReportes />
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
@@ -191,11 +309,83 @@ function AppContent() {
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
-            
-            <Route path="/exogena">
+
+            <Route path="/activos-fijos/catalogo">
               <ProtectedRoute>
                 <AuthenticatedLayout>
-                  <Exogena />
+                  <ActivosFijosCatalogo />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/activos-fijos/depreciacion">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ActivosFijosDepreciacion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/activos-fijos/mtto">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ActivosFijosMtto />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/activos-fijos/bajas">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ActivosFijosBajas />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/activos-fijos/reportes">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ActivosFijosReportes />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/activos-fijos/config">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ActivosFijosConfig />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/exogena/historial">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ExogenaHistorial />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/exogena/formatos">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ExogenaFormatos />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/exogena/generacion">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ExogenaGeneracion />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/exogena/avanzada">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ExogenaAvanzada />
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
@@ -204,6 +394,14 @@ function AppContent() {
               <ProtectedRoute>
                 <AuthenticatedLayout>
                   <Reservas />
+                </AuthenticatedLayout>
+              </ProtectedRoute>
+            </Route>
+
+            <Route path="/zonas-comunes">
+              <ProtectedRoute>
+                <AuthenticatedLayout>
+                  <ZonasComunes />
                 </AuthenticatedLayout>
               </ProtectedRoute>
             </Route>
