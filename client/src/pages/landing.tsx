@@ -526,7 +526,7 @@ export default function Landing() {
 
               {/* Floating Cards */}
               <motion.div
-                className="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-lg p-4 border border-gray-100"
+                className="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-lg p-4 border border-gray-100 z-20"
                 animate={floatingAnimation}
                 whileHover={{
                   scale: 1.1,
@@ -549,7 +549,7 @@ export default function Landing() {
               </motion.div>
 
               <motion.div
-                className="absolute -top-8 -right-8 bg-white rounded-xl shadow-lg p-4 border border-gray-100"
+                className="absolute -top-8 -right-8 bg-white rounded-xl shadow-lg p-4 border border-gray-100 z-20"
                 animate={{
                   ...floatingAnimation,
                   transition: { ...floatingAnimation.transition, delay: 1.5 }
