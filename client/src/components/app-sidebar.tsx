@@ -160,19 +160,50 @@ const menuGroups: MenuGroup[] = [
 
 export function AppSidebar() {
   const [location] = useLocation();
-  const { isExpanded } = useSidebar();
+  const { isExpanded, toggleSidebar } = useSidebar();
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
-    "Principal-Gestión": true,
+    "Principal-Gestión": false,
     "Contabilidad-Contabilidad": false,
+    "Tesorería-Tesorería": false,
+    "Operaciones-Facturación": false,
+    "Operaciones-Nómina": false,
+    "Administración-Presupuestos": false,
+    "Administración-Activos Fijos": false,
+    "Administración-Exógena": false,
     "Mi Comunidad-Mi Comunidad": false,
   });
 
   const toggleSubmenu = (groupTitle: string, itemName: string) => {
     const key = `${groupTitle}-${itemName}`;
-    setOpenSubmenus(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+    const isCurrentlyOpen = openSubmenus[key] || false;
+    
+    if (!isCurrentlyOpen) {
+      // Si se está abriendo un submenu, cerrar todos los demás primero
+      const newOpenSubmenus: Record<string, boolean> = {};
+      
+      // Cerrar todos los submenus
+      Object.keys(openSubmenus).forEach(existingKey => {
+        newOpenSubmenus[existingKey] = false;
+      });
+      
+      // Abrir solo el submenu seleccionado
+      newOpenSubmenus[key] = true;
+      
+      setOpenSubmenus(newOpenSubmenus);
+    } else {
+      // Si se está cerrando, simplemente cerrar este submenu
+      setOpenSubmenus(prev => ({
+        ...prev,
+        [key]: false
+      }));
+    }
+  };
+
+  const handleNavigation = () => {
+    // Solo ocultar el sidebar si está expandido
+    if (isExpanded) {
+      toggleSidebar();
+    }
   };
 
   const isActive = (path: string) => location === path;
@@ -221,6 +252,7 @@ export function AppSidebar() {
                               <li key={subIndex}>
                                 <Link
                                   href={subItem.path}
+                                  onClick={handleNavigation}
                                   className={`flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white ${
                                     isActive(subItem.path)
                                       ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
@@ -238,6 +270,7 @@ export function AppSidebar() {
                     ) : (
                       <Link
                         href={item.path}
+                        onClick={handleNavigation}
                         className={`flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white ${
                           isActive(item.path)
                             ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
