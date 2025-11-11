@@ -43,6 +43,7 @@ function AuthenticatedLayoutContent({ children }: AuthenticatedLayoutProps) {
             >
               <Menu className="h-5 w-5" />
             </Button>
+            <img src="/icono.png" alt="GRAVY Logo" className="w-8 h-8 rounded-md" />
             <div className="flex flex-col">
               <span className="text-sm font-medium text-gray-900 dark:text-white">{suscriptorActual.nombre}</span>
               <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">

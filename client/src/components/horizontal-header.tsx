@@ -47,9 +47,7 @@ export function HorizontalHeader() {
         {/* Logo */}
         <Link href="/">
           <a className="flex items-center gap-2 mr-6" data-testid="link-home">
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground font-bold">
-              G
-            </div>
+            <img src="/icono.png" alt="GRAVY Logo" className="w-8 h-8 rounded-md" />
             <span className="font-semibold text-lg hidden md:inline-block">Gravi</span>
           </a>
         </Link>

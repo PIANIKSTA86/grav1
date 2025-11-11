@@ -217,9 +217,7 @@ export default function Blog() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-xl">
-                G
-              </div>
+              <img src="/icono.png" alt="GRAVY Logo" className="w-10 h-10 rounded-lg" />
               <span className="text-2xl font-bold text-gray-900">GRAVY</span>
             </div>
             <Button
@@ -708,9 +706,7 @@ export default function Blog() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-lg">
-                  G
-                </div>
+                <img src="/icono.png" alt="GRAVY Logo" className="w-8 h-8 rounded-lg" />
                 <span className="text-xl font-bold">GRAVY</span>
               </div>
               <p className="text-gray-400 text-sm mb-4">

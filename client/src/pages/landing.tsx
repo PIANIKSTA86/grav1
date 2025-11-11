@@ -367,9 +367,7 @@ export default function Landing() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-xl">
-                G
-              </div>
+              <img src="/icono.png" alt="GRAVY Logo" className="w-10 h-10 rounded-lg" />
               <span className="text-2xl font-bold text-gray-900">GRAVY</span>
             </div>
 
@@ -1413,15 +1411,15 @@ export default function Landing() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <motion.div
-                  className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-2xl"
+                <motion.img
+                  src="/icono.png"
+                  alt="GRAVY Logo"
+                  className="w-12 h-12 rounded-lg"
                   animate={{
                     rotate: [0, 5, -5, 0],
                     transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
                   }}
-                >
-                  G
-                </motion.div>
+                />
                 <motion.span
                   className="text-3xl font-bold"
                   animate={{
