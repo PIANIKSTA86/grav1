@@ -1000,7 +1000,7 @@ export default function Landing() {
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              Crea tu cuenta gratis y únete a la plataforma más avanzada de gestión de copropiedades en Colombia
+              Únete a la plataforma más avanzada de gestión de copropiedades en Colombia
             </motion.p>
 
             <motion.div
@@ -1438,7 +1438,7 @@ export default function Landing() {
                 backgroundClip: "text"
               }}
             >
-              Soporte Técnico
+              Canal de Ventas y Soporte Técnico
             </motion.h2>
             <motion.p
               className="text-xl text-gray-600 max-w-3xl mx-auto"
@@ -1509,10 +1509,50 @@ export default function Landing() {
                   </motion.div>
                 </div>
 
+                <div className="grid md:grid-cols-2 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.25 }}
+                    viewport={{ once: true }}
+                  >
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      Número de contacto
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      placeholder="+57 300 123 4567"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    viewport={{ once: true }}
+                  >
+                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                      Nombre de la empresa
+                    </label>
+                    <input
+                      type="text"
+                      id="company"
+                      name="company"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      placeholder="Nombre de tu copropiedad"
+                      required
+                    />
+                  </motion.div>
+                </div>
+
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
+                  transition={{ duration: 0.5, delay: 0.35 }}
                   viewport={{ once: true }}
                 >
                   <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
@@ -1525,8 +1565,8 @@ export default function Landing() {
                     required
                   >
                     <option value="">Selecciona un tema</option>
+                    <option value="billing">Ventas y Facturación</option>
                     <option value="technical">Problema técnico</option>
-                    <option value="billing">Facturación y pagos</option>
                     <option value="account">Cuenta y acceso</option>
                     <option value="features">Funcionalidades</option>
                     <option value="other">Otro</option>
@@ -1555,7 +1595,7 @@ export default function Landing() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
+                  transition={{ duration: 0.5, delay: 0.45 }}
                   viewport={{ once: true }}
                 >
                   <motion.div
@@ -1617,8 +1657,9 @@ export default function Landing() {
                       <Building2 className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
                     </motion.div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">GRAVY SAS</h4>
-                      <p className="text-gray-600">NIT: 901.234.567-8</p>
+                      <h4 className="font-semibold text-gray-900">GRAVY es diseñado:</h4>
+                      <p className="text-gray-600">Por MS Soluciones Integrales / Julian Espinosa</p>
+                      {/*<p className="text-gray-600">NIT: 901.234.567-8</p> */}
                     </div>
                   </motion.div>
 
@@ -1637,7 +1678,7 @@ export default function Landing() {
                     </motion.div>
                     <div>
                       <h4 className="font-semibold text-gray-900">Dirección</h4>
-                      <p className="text-gray-600">Carrera 7 # 45-23, Oficina 1201<br />Bogotá, Colombia</p>
+                      <p className="text-gray-600">Santiago de Cali<br />Colombia</p>
                     </div>
                   </motion.div>
 
@@ -1656,7 +1697,7 @@ export default function Landing() {
                     </motion.div>
                     <div>
                       <h4 className="font-semibold text-gray-900">Horario de atención</h4>
-                      <p className="text-gray-600">Lunes a Viernes: 8:00 AM - 6:00 PM<br />Sábados: 9:00 AM - 1:00 PM</p>
+                      <p className="text-gray-600">Lunes a Viernes: 8:00 AM - 5:00 PM<br />Sábados: 9:00 AM - 1:00 PM</p>
                     </div>
                   </motion.div>
                 </div>
@@ -1679,7 +1720,7 @@ export default function Landing() {
                 </motion.h4>
 
                 <div className="space-y-3">
-                  <motion.div
+                  {/*<motion.div
                     className="flex items-center gap-3"
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -1693,7 +1734,7 @@ export default function Landing() {
                       <MessageSquare className="h-5 w-5 text-green-600" />
                     </motion.div>
                     <span className="text-gray-700">Chat en vivo (24/7)</span>
-                  </motion.div>
+                  </motion.div> */}
 
                   <motion.div
                     className="flex items-center gap-3"
@@ -1708,7 +1749,7 @@ export default function Landing() {
                     >
                       <Mail className="h-5 w-5 text-green-600" />
                     </motion.div>
-                    <span className="text-gray-700">soporte@gravy.com.co</span>
+                    <span className="text-gray-700">soporte-gravy@gmail.com</span>
                   </motion.div>
 
                   <motion.div
@@ -1724,7 +1765,7 @@ export default function Landing() {
                     >
                       <Phone className="h-5 w-5 text-green-600" />
                     </motion.div>
-                    <span className="text-gray-700">+57 (1) 234-5678</span>
+                    <span className="text-gray-700">+57 (315) 909-4474</span>
                   </motion.div>
                 </div>
               </motion.div>
