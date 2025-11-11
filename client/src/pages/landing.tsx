@@ -242,7 +242,7 @@ export default function Landing() {
       color: "blue"
     },
     {
-      name: "Profesional",
+      name: "Pro",
       price: "$99.900",
       period: "/mes",
       description: "Ideal para copropiedades en crecimiento",
@@ -253,7 +253,6 @@ export default function Landing() {
         "Módulo de nómina",
         "Reportes avanzados",
         "Soporte prioritario",
-        "API integrada"
       ],
       buttonText: "Comenzar Ahora",
       popular: true,
@@ -266,12 +265,11 @@ export default function Landing() {
       description: "Para grandes complejos residenciales",
       features: [
         "Unidades ilimitadas",
-        "Todas las funcionalidades",
+        "Funciones plan Pro",
         "Módulos premium",
         "Consultoría personalizada",
         "Soporte 24/7",
-        "Implementación dedicada",
-        "Capacitación del equipo"
+        "App del propietario",
       ],
       buttonText: "Contactar Ventas",
       popular: false,
@@ -1059,7 +1057,7 @@ export default function Landing() {
               {faqs.slice(0, 4).map((faq, index) => (
                 <motion.div
                   key={index}
-                  className="mb-4"
+                  className="mb-2"
                   variants={itemVariants}
                   animate={floatingAnimation}
                 >
@@ -1074,7 +1072,7 @@ export default function Landing() {
                     whileTap={{ scale: 0.98 }}
                   >
                     <motion.div
-                      className="p-6"
+                      className="p-4"
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       transition={{ duration: 0.5, delay: 0.2 }}
@@ -1239,7 +1237,7 @@ export default function Landing() {
                       plan.color === 'orange'
                         ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
                         : plan.color === 'green'
-                        ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
                         : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
                     } text-white font-medium py-3 px-6 h-auto transition-all duration-300 shadow-lg hover:shadow-xl`}
                   >
