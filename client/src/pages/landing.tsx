@@ -596,7 +596,7 @@ export default function Landing() {
               <motion.div
                 className="flex items-center gap-6 pt-4"
                 variants={itemVariants}
-              >
+              >{/*
                 <motion.div
                   className="flex -space-x-2"
                   whileHover={{ scale: 1.05 }}
@@ -618,14 +618,14 @@ export default function Landing() {
                       {String.fromCharCode(65 + i)}
                     </motion.div>
                   ))}
-                </motion.div>
+                </motion.div> 
                 <motion.div
                   className="text-sm text-gray-600"
                   animate={pulseAnimation}
                 >
                   <div className="font-semibold text-gray-900">+500 copropiedades</div>
                   confían en GRAVY
-                </motion.div>
+                </motion.div> */}
               </motion.div>
             </motion.div>
 
@@ -706,7 +706,7 @@ export default function Landing() {
                     <Shield className="h-5 w-5 text-blue-600" />
                   </motion.div>
                   <div>
-                    <div className="font-semibold text-gray-900">99.9% uptime</div>
+                    <div className="font-semibold text-gray-900">99.8% uptime</div>
                     <div className="text-sm text-gray-600">disponibilidad garantizada</div>
                   </div>
                 </div>
