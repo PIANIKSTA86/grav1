@@ -23,7 +23,11 @@ import {
   Award,
   ChevronDown,
   Menu,
-  X
+  X,
+  MapPin,
+  MessageSquare,
+  Mail,
+  Phone
 } from "lucide-react";
 import {
   Dialog,
@@ -214,8 +218,8 @@ export default function Landing() {
   };
 
   const stats = [
-    { number: "+500", label: "Copropiedades activas", icon: Building2 },
-    { number: "99.9%", label: "Tiempo de actividad", icon: Shield },
+    { number: "+35%", label: "Mejoras en procesos vs otros sistemas", icon: Building2 },
+    { number: "99.8%", label: "Tiempo de actividad", icon: Shield },
     { number: "24/7", label: "Soporte técnico", icon: Users },
     { number: "50%", label: "Ahorro en tiempo administrativo", icon: Clock }
   ];
@@ -279,7 +283,7 @@ export default function Landing() {
     {
       icon: FileText,
       title: "Contabilidad Automatizada",
-      description: "Genera informes contables precisos y cumple con la normativa DIAN automáticamente",
+      description: "Genera informes contables precisos y cumpliendo con la normativa DIAN automáticamente",
       benefits: ["Plan de cuentas personalizado", "Comprobantes electrónicos", "Reportes fiscales automáticos"]
     },
     {
@@ -309,35 +313,8 @@ export default function Landing() {
     {
       icon: Smartphone,
       title: "Acceso Móvil",
-      description: "Gestiona tu copropiedad desde cualquier lugar con nuestra app móvil nativa",
+      description: "Gestiona de copropietarios desde cualquier lugar con nuestra app móvil nativa",
       benefits: ["App iOS y Android", "Notificaciones push", "Acceso offline limitado"]
-    }
-  ];
-
-  const testimonials = [
-    {
-      name: "María González",
-      role: "Administradora",
-      company: "Conjunto Torres del Parque",
-      content: "GRAVY revolucionó nuestra gestión administrativa. Redujimos el tiempo de cierre contable de 2 semanas a 2 días.",
-      rating: 5,
-      avatar: "MG"
-    },
-    {
-      name: "Carlos Rodríguez",
-      role: "Contador",
-      company: "Edificio Centro Empresarial",
-      content: "La precisión en los reportes fiscales es impresionante. Nunca habíamos cumplido tan fácilmente con la DIAN.",
-      rating: 5,
-      avatar: "CR"
-    },
-    {
-      name: "Ana López",
-      role: "Presidenta de Copropiedad",
-      company: "Condominio Los Álamos",
-      content: "La transparencia que brinda GRAVY a los copropietarios es invaluable. Todos pueden ver el estado real de las finanzas.",
-      rating: 5,
-      avatar: "AL"
     }
   ];
 
@@ -378,16 +355,20 @@ export default function Landing() {
                 Características
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="/blog" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
-                Blog
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
-              </a>
               <a href="#pricing" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
                 Precios
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
+              <a href="/blog" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
+                Blog
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
+              </a>
               <a href="#faq" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
                 FAQ
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
+              </a>
+              <a href="#support" className="relative text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 group">
+                Soporte
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 group-hover:w-full transition-all duration-300"></span>
               </a>
             </nav>
@@ -459,6 +440,14 @@ export default function Landing() {
                   onClick={() => setShowMobileMenu(false)}
                 >
                   FAQ
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a
+                  href="#support"
+                  className="relative text-gray-600 hover:text-orange-600 font-medium transition-all duration-300 group py-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Soporte
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 group-hover:w-full transition-all duration-300"></span>
                 </a>
                 <div className="flex flex-col gap-2 pt-4">
@@ -955,7 +944,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 to-blue-700 relative overflow-hidden">
+      <section id="faq" className="py-24 bg-gradient-to-r from-blue-600 to-blue-700 relative overflow-hidden">
         {/* Background Pattern */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-blue-700/50 to-blue-600/50"
@@ -1422,6 +1411,325 @@ export default function Landing() {
               </motion.div>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Support Section */}
+      <section id="support" className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2
+              className="text-5xl font-bold text-gray-900 mb-6"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                background: "linear-gradient(45deg, #1f2937, #3b82f6, #1f2937)",
+                backgroundSize: "200% 200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text"
+              }}
+            >
+              Soporte Técnico
+            </motion.h2>
+            <motion.p
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              Nuestro equipo de expertos está aquí para ayudarte. Contáctanos y resolveremos tus dudas de manera rápida y eficiente.
+            </motion.p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
+            {/* Contact Form */}
+            <motion.div
+              className="bg-gray-50 rounded-2xl p-8 shadow-lg"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <motion.h3
+                className="text-2xl font-bold text-gray-900 mb-6"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
+                Envíanos un mensaje
+              </motion.h3>
+
+              <form className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                      Nombre completo
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      placeholder="Tu nombre"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    viewport={{ once: true }}
+                  >
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      Correo electrónico
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      placeholder="tu@email.com"
+                      required
+                    />
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    Asunto
+                  </label>
+                  <select
+                    id="subject"
+                    name="subject"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    required
+                  >
+                    <option value="">Selecciona un tema</option>
+                    <option value="technical">Problema técnico</option>
+                    <option value="billing">Facturación y pagos</option>
+                    <option value="account">Cuenta y acceso</option>
+                    <option value="features">Funcionalidades</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  viewport={{ once: true }}
+                >
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    Mensaje
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
+                    placeholder="Describe tu consulta o problema..."
+                    required
+                  ></textarea>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-6 h-auto transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                      <motion.span
+                        animate={{ opacity: [1, 0.7, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        Enviar mensaje
+                      </motion.span>
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </form>
+            </motion.div>
+
+            {/* Company Info */}
+            <motion.div
+              className="space-y-8"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <motion.div
+                className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8"
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.3 }
+                }}
+              >
+                <motion.h3
+                  className="text-2xl font-bold text-gray-900 mb-6"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Información de la empresa
+                </motion.h3>
+
+                <div className="space-y-4">
+                  <motion.div
+                    className="flex items-start gap-4"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                    >
+                      <Building2 className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
+                    </motion.div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">GRAVY SAS</h4>
+                      <p className="text-gray-600">NIT: 901.234.567-8</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-start gap-4"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    >
+                      <MapPin className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
+                    </motion.div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Dirección</h4>
+                      <p className="text-gray-600">Carrera 7 # 45-23, Oficina 1201<br />Bogotá, Colombia</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-start gap-4"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Clock className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
+                    </motion.div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Horario de atención</h4>
+                      <p className="text-gray-600">Lunes a Viernes: 8:00 AM - 6:00 PM<br />Sábados: 9:00 AM - 1:00 PM</p>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8"
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.3 }
+                }}
+              >
+                <motion.h4
+                  className="text-xl font-bold text-gray-900 mb-4"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Canales de soporte
+                </motion.h4>
+
+                <div className="space-y-3">
+                  <motion.div
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <MessageSquare className="h-5 w-5 text-green-600" />
+                    </motion.div>
+                    <span className="text-gray-700">Chat en vivo (24/7)</span>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    >
+                      <Mail className="h-5 w-5 text-green-600" />
+                    </motion.div>
+                    <span className="text-gray-700">soporte@gravy.com.co</span>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                    >
+                      <Phone className="h-5 w-5 text-green-600" />
+                    </motion.div>
+                    <span className="text-gray-700">+57 (1) 234-5678</span>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
