@@ -50,6 +50,7 @@ export default function Landing() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   // Smooth scroll function
   const scrollToPricing = () => {
@@ -1060,7 +1061,7 @@ export default function Landing() {
 
             {/* FAQ Preview */}
             <motion.div
-              className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
+              className="max-w-4xl mx-auto"
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -1069,33 +1070,65 @@ export default function Landing() {
               {faqs.slice(0, 4).map((faq, index) => (
                 <motion.div
                   key={index}
-                  className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20"
+                  className="mb-4"
                   variants={itemVariants}
-                  whileHover={{
-                    scale: 1.05,
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    transition: { duration: 0.3 }
-                  }}
                   animate={floatingAnimation}
                 >
-                  <motion.h3
-                    className="text-lg font-semibold text-white mb-3"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: true }}
+                  <motion.div
+                    className={`bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 cursor-pointer transition-all duration-300 ${
+                      expandedFaq === index
+                        ? 'md:col-span-full bg-white/20'
+                        : 'hover:bg-white/15'
+                    }`}
+                    onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    {faq.question}
-                  </motion.h3>
-                  <motion.p
-                    className="text-blue-100 leading-relaxed text-sm"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    viewport={{ once: true }}
-                  >
-                    {faq.answer.substring(0, 100)}...
-                  </motion.p>
+                    <motion.div
+                      className="p-6"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <motion.h3
+                          className="text-lg font-semibold text-white pr-4"
+                          layout
+                        >
+                          {faq.question}
+                        </motion.h3>
+                        <motion.div
+                          animate={{ rotate: expandedFaq === index ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="flex-shrink-0"
+                        >
+                          <ChevronDown className="w-5 h-5 text-white" />
+                        </motion.div>
+                      </div>
+
+                      <AnimatePresence>
+                        {expandedFaq === index && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="overflow-hidden"
+                          >
+                            <motion.p
+                              className="text-blue-100 leading-relaxed text-sm mt-4 pt-4 border-t border-white/20"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.3, delay: 0.1 }}
+                            >
+                              {faq.answer}
+                            </motion.p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  </motion.div>
                 </motion.div>
               ))}
             </motion.div>
