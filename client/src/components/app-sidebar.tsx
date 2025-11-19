@@ -29,11 +29,6 @@ const menuGroups: MenuGroup[] = [
         path: "/suscriptores",
         icon: Building2,
       },
-      {
-        name: "Terceros",
-        path: "/terceros",
-        icon: Users,
-      },
     ],
   },
   {
@@ -47,6 +42,7 @@ const menuGroups: MenuGroup[] = [
           { name: "Plan de Cuentas", path: "/plan-cuentas", icon: FileSpreadsheet },
           { name: "Comprobantes", path: "/comprobantes", icon: FileText },
           { name: "Períodos", path: "/periodos", icon: ClipboardList },
+          { name: "Terceros", path: "/terceros", icon: Users },
         ],
       },
     ],
@@ -70,7 +66,7 @@ const menuGroups: MenuGroup[] = [
     title: "Operaciones",
     items: [
       {
-        name: "Facturación",
+        name: "Facturación PH",
         path: "#",
         icon: Receipt,
         subItems: [
@@ -162,10 +158,9 @@ export function AppSidebar() {
   const [location] = useLocation();
   const { isExpanded, toggleSidebar } = useSidebar();
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
-    "Principal-Gestión": false,
     "Contabilidad-Contabilidad": false,
     "Tesorería-Tesorería": false,
-    "Operaciones-Facturación": false,
+    "Operaciones-Facturación PH": false,
     "Operaciones-Nómina": false,
     "Administración-Presupuestos": false,
     "Administración-Activos Fijos": false,
@@ -176,19 +171,19 @@ export function AppSidebar() {
   const toggleSubmenu = (groupTitle: string, itemName: string) => {
     const key = `${groupTitle}-${itemName}`;
     const isCurrentlyOpen = openSubmenus[key] || false;
-    
+
     if (!isCurrentlyOpen) {
       // Si se está abriendo un submenu, cerrar todos los demás primero
       const newOpenSubmenus: Record<string, boolean> = {};
-      
+
       // Cerrar todos los submenus
       Object.keys(openSubmenus).forEach(existingKey => {
         newOpenSubmenus[existingKey] = false;
       });
-      
+
       // Abrir solo el submenu seleccionado
       newOpenSubmenus[key] = true;
-      
+
       setOpenSubmenus(newOpenSubmenus);
     } else {
       // Si se está cerrando, simplemente cerrar este submenu

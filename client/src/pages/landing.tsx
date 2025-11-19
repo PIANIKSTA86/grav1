@@ -1747,7 +1747,7 @@ export default function Landing() {
                     >
                       <Mail className="h-5 w-5 text-green-600" />
                     </motion.div>
-                    <span className="text-gray-700">soporte-gravy@gmail.com</span>
+                    <span className="text-gray-700">soporte.gravy@gmail.com</span>
                   </motion.div>
 
                   <motion.div
@@ -1763,7 +1763,7 @@ export default function Landing() {
                     >
                       <Phone className="h-5 w-5 text-green-600" />
                     </motion.div>
-                    <span className="text-gray-700">+57 (315) 909-4474</span>
+                    <span className="text-gray-700">+57 (323) 327-3136</span>
                   </motion.div>
                 </div>
               </motion.div>
@@ -1873,9 +1873,8 @@ export default function Landing() {
               >
                 {[
                   { href: "#features", text: "Características" },
-                  { href: "#pricing", text: "Precios" },
-                  { href: "#", text: "Integraciones" },
-                  { href: "#", text: "API" }
+                  { href: "#", text: "Demo" },
+                  { href: "#pricing", text: "Precios" }
                 ].map((item, index) => (
                   <motion.li
                     key={index}
@@ -1909,9 +1908,8 @@ export default function Landing() {
               >
                 {[
                   { href: "#", text: "Centro de Ayuda" },
-                  { href: "#", text: "Documentación" },
-                  { href: "#", text: "Contacto" },
-                  { href: "#", text: "Status" }
+                  { href: "#support", text: "Contacto" },
+                  { href: "#", text: "Documentación" }
                 ].map((item, index) => (
                   <motion.li
                     key={index}
@@ -1945,9 +1943,7 @@ export default function Landing() {
               >
                 {[
                   { href: "#", text: "Sobre nosotros" },
-                  { href: "/blog", text: "Blog" },
-                  { href: "#", text: "Carreras" },
-                  { href: "#", text: "Prensa" }
+                  { href: "/blog", text: "Blog" }
                 ].map((item, index) => (
                   <motion.li
                     key={index}
@@ -1979,7 +1975,7 @@ export default function Landing() {
                 viewport={{ once: true }}
               >
                 <motion.span variants={itemVariants}>
-                  © 2024 GRAVY. Todos los derechos reservados.
+                  © 2025 GRAVY. Todos los derechos reservados.
                 </motion.span>
                 <motion.span
                   variants={itemVariants}
@@ -1988,7 +1984,7 @@ export default function Landing() {
                   }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  Hecho con ❤️ en Colombia
+                  Hecho con ❤️ en Cali, Colombia
                 </motion.span>
               </motion.div>
               <motion.div
