@@ -229,6 +229,7 @@ router.get("/:suscriptorId/verificar", async (req: Request, res: Response) => {
 // Obtiene el plan de cuentas en formato jerárquico
 router.get("/:suscriptorId/jerarquia", async (req: Request, res: Response) => {
   try {
+    const db = await getDatabase();
     const { suscriptorId } = req.params;
 
     if (!suscriptorId) {

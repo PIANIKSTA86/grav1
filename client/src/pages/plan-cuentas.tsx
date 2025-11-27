@@ -1,98 +1,42 @@
 import { useState } from "react";
-import { Plus, Search, ChevronRight, ChevronDown, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, ChevronRight, ChevronDown, Edit, Trash2, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-interface Cuenta {
-  id: string;
-  codigo: string;
-  nombre: string;
-  tipo: string;
-  nivel: number;
-  hijos?: Cuenta[];
-  expanded?: boolean;
-}
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { usePlanCuentas, type Cuenta } from "@/hooks/use-plan-cuentas";
 
 export default function PlanCuentas() {
+  const { cuentas, loading, error, refetch } = usePlanCuentas();
   const [searchTerm, setSearchTerm] = useState("");
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(["1", "2"]));
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  //todo: remove mock functionality
-  const cuentas: Cuenta[] = [
-    {
-      id: "1",
-      codigo: "1",
-      nombre: "ACTIVO",
-      tipo: "activo",
-      nivel: 1,
-      hijos: [
-        {
-          id: "1.1",
-          codigo: "11",
-          nombre: "Disponible",
-          tipo: "activo",
-          nivel: 2,
-          hijos: [
-            { id: "1.1.1", codigo: "1105", nombre: "Caja", tipo: "activo", nivel: 3 },
-            { id: "1.1.2", codigo: "1110", nombre: "Bancos", tipo: "activo", nivel: 3 },
-          ],
-        },
-        {
-          id: "1.2",
-          codigo: "13",
-          nombre: "Deudores",
-          tipo: "activo",
-          nivel: 2,
-          hijos: [
-            { id: "1.2.1", codigo: "1305", nombre: "Clientes", tipo: "activo", nivel: 3 },
-            { id: "1.2.2", codigo: "1330", nombre: "Anticipos y Avances", tipo: "activo", nivel: 3 },
-          ],
-        },
-      ],
-    },
-    {
-      id: "2",
-      codigo: "2",
-      nombre: "PASIVO",
-      tipo: "pasivo",
-      nivel: 1,
-      hijos: [
-        {
-          id: "2.1",
-          codigo: "23",
-          nombre: "Cuentas por Pagar",
-          tipo: "pasivo",
-          nivel: 2,
-          hijos: [
-            { id: "2.1.1", codigo: "2335", nombre: "Costos y Gastos por Pagar", tipo: "pasivo", nivel: 3 },
-            { id: "2.1.2", codigo: "2365", nombre: "Retención en la Fuente", tipo: "pasivo", nivel: 3 },
-          ],
-        },
-      ],
-    },
-    {
-      id: "3",
-      codigo: "4",
-      nombre: "INGRESOS",
-      tipo: "ingreso",
-      nivel: 1,
-      hijos: [
-        {
-          id: "3.1",
-          codigo: "41",
-          nombre: "Ingresos Operacionales",
-          tipo: "ingreso",
-          nivel: 2,
-          hijos: [
-            { id: "3.1.1", codigo: "4135", nombre: "Cuotas de Administración", tipo: "ingreso", nivel: 3 },
-            { id: "3.1.2", codigo: "4155", nombre: "Intereses de Mora", tipo: "ingreso", nivel: 3 },
-          ],
-        },
-      ],
-    },
-  ];
+  // Filtrar cuentas basado en el término de búsqueda
+  const filteredCuentas = cuentas.filter(cuenta =>
+    cuenta.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cuenta.codigo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Función recursiva para filtrar cuentas incluyendo padres si los hijos coinciden
+  const filterCuentasWithParents = (cuentas: Cuenta[], searchTerm: string): Cuenta[] => {
+    return cuentas
+      .map(cuenta => {
+        const matchesSearch = cuenta.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            cuenta.codigo.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const filteredHijos = cuenta.hijos ? filterCuentasWithParents(cuenta.hijos, searchTerm) : [];
+
+        if (matchesSearch || filteredHijos.length > 0) {
+          return { ...cuenta, hijos: filteredHijos };
+        }
+
+        return null;
+      })
+      .filter((cuenta): cuenta is Cuenta => cuenta !== null);
+  };
+
+  const displayCuentas = searchTerm ? filterCuentasWithParents(cuentas, searchTerm) : cuentas;
 
   const toggleExpanded = (id: string) => {
     setExpandedItems((prev) => {
@@ -131,9 +75,21 @@ export default function PlanCuentas() {
           )}
           <span className="font-mono text-sm min-w-[80px]">{cuenta.codigo}</span>
           <span className="flex-1">{cuenta.nombre}</span>
-          <Badge variant="outline" className="text-xs">
-            {cuenta.tipo}
-          </Badge>
+          <div className="flex gap-2">
+            <Badge variant="outline" className="text-xs">
+              {cuenta.tipo}
+            </Badge>
+            {cuenta.naturaleza && (
+              <Badge variant={cuenta.naturaleza === 'D' ? 'default' : 'secondary'} className="text-xs">
+                {cuenta.naturaleza === 'D' ? 'Débito' : 'Crédito'}
+              </Badge>
+            )}
+            {cuenta.registraTercero && (
+              <Badge variant="outline" className="text-xs">
+                Tercero
+              </Badge>
+            )}
+          </div>
           {depth > 0 && (
             <div className="flex gap-1">
               <Button
@@ -201,9 +157,41 @@ export default function PlanCuentas() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-1">
-            {cuentas.map((cuenta) => renderCuenta(cuenta))}
-          </div>
+          {loading && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <span>Cargando plan de cuentas...</span>
+            </div>
+          )}
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                {error}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ml-2"
+                  onClick={refetch}
+                >
+                  Reintentar
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {!loading && !error && displayCuentas.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              {searchTerm ? "No se encontraron cuentas que coincidan con la búsqueda." : "No hay cuentas en el plan contable."}
+            </div>
+          )}
+
+          {!loading && !error && displayCuentas.length > 0 && (
+            <div className="space-y-1">
+              {displayCuentas.map((cuenta) => renderCuenta(cuenta))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
