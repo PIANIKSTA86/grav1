@@ -10,6 +10,7 @@ import {
   date,
   datetime,
   json,
+  mysqlEnum,
   index,
   uniqueIndex
 } from "drizzle-orm/mysql-core";
@@ -108,15 +109,23 @@ export const unidades = mysqlTable("unidades", {
 
 export const planCuentas = mysqlTable("plan_cuentas", {
   id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
-  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
+  suscriptorId: char("suscriptor_id", { length: 36 }).references(() => suscriptores.id, { onDelete: "cascade" }),
+  esPlantilla: boolean("es_plantilla").notNull().default(false),
   codigo: varchar("codigo", { length: 20 }).notNull(),
   nombre: varchar("nombre", { length: 255 }).notNull(),
   tipo: varchar("tipo", { length: 20 }).notNull(),
+  naturaleza: varchar("naturaleza", { length: 1 }),
   nivel: int("nivel").notNull().default(1),
+  categoriaNivel: varchar("categoria_nivel", { length: 20 }),
+  ruta: varchar("ruta", { length: 500 }),
+  rutaCodigo: varchar("ruta_codigo", { length: 500 }),
   padreId: char("padre_id", { length: 36 }).references((): any => planCuentas.id, { onDelete: "set null" }),
   esDebito: boolean("es_debito"),
   registraTercero: boolean("registra_tercero").notNull().default(false),
   requiereCentroCosto: boolean("requiere_centro_costo").notNull().default(false),
+  requierePresupuesto: boolean("requiere_presupuesto").notNull().default(false),
+  niifCategoriaId: char("niif_categoria_id", { length: 36 }),
+  pucCategoriaId: char("puc_categoria_id", { length: 36 }),
   activo: boolean("activo").notNull().default(true),
   fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
   fechaActualizacion: datetime("fecha_actualizacion").notNull().default(sql`NOW()`),
@@ -419,6 +428,106 @@ export const auditoria = mysqlTable("auditoria", {
   fechaIdx: index("idx_auditoria_fecha").on(table.fecha),
 }));
 
+export const bancos = mysqlTable("bancos", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
+  nombre: varchar("nombre", { length: 150 }).notNull(),
+  codigo: varchar("codigo", { length: 50 }),
+  activo: boolean("activo").notNull().default(true),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  suscriptorIdx: index("idx_bancos_suscriptor").on(table.suscriptorId),
+}));
+
+export const catalogoNiif = mysqlTable("catalogo_niif", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  codigo: varchar("codigo", { length: 20 }).notNull(),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  nivel: int("nivel").notNull(),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  codigoIdx: index("idx_catalogo_niif_codigo").on(table.codigo),
+}));
+
+export const catalogoPuc = mysqlTable("catalogo_puc", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  codigo: varchar("codigo", { length: 20 }).notNull(),
+  nombre: varchar("nombre", { length: 255 }).notNull(),
+  nivel: int("nivel").notNull(),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  codigoIdx: index("idx_catalogo_puc_codigo").on(table.codigo),
+}));
+
+export const catalogEstado = mysqlTable("catalog_estado", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  codigo: varchar("codigo", { length: 60 }).notNull(),
+  nombre: varchar("nombre", { length: 100 }).notNull(),
+  descripcion: text("descripcion"),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+  fechaActualizacion: datetime("fecha_actualizacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  codigoIdx: index("idx_catalog_estado_codigo").on(table.codigo),
+}));
+
+export const cuentasBancarias = mysqlTable("cuentas_bancarias", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
+  bancoId: char("banco_id", { length: 36 }).references(() => bancos.id, { onDelete: "set null" }),
+  numeroCuenta: varchar("numero_cuenta", { length: 100 }).notNull(),
+  tipoCuenta: varchar("tipo_cuenta", { length: 50 }),
+  titular: varchar("titular", { length: 255 }),
+  activo: boolean("activo").notNull().default(true),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  suscriptorIdx: index("idx_cuentas_bancarias_suscriptor").on(table.suscriptorId),
+  bancoIdx: index("idx_cuentas_bancarias_banco").on(table.bancoId),
+}));
+
+export const documentosElectronicos = mysqlTable("documentos_electronicos", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
+  tipoDocumento: varchar("tipo_documento", { length: 50 }).notNull(),
+  referenciaExterna: varchar("referencia_externa", { length: 255 }),
+  payload: json("payload"),
+  estadoEnvio: varchar("estado_envio", { length: 20 }).notNull().default("pendiente"),
+  respuesta: json("respuesta"),
+  fechaEnvio: datetime("fecha_envio"),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+  fechaActualizacion: datetime("fecha_actualizacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  suscriptorIdx: index("idx_documentos_electronicos_suscriptor").on(table.suscriptorId),
+  estadoIdx: index("idx_documentos_electronicos_estado").on(table.estadoEnvio),
+}));
+
+export const parametrosContables = mysqlTable("parametros_contables", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
+  tipoParametro: varchar("tipo_parametro", { length: 100 }).notNull(),
+  cuentaId: char("cuenta_id", { length: 36 }).notNull().references(() => planCuentas.id, { onDelete: "cascade" }),
+  centroCostoId: char("centro_costo_id", { length: 36 }).references(() => centrosCosto.id, { onDelete: "set null" }),
+  activo: boolean("activo").notNull().default(true),
+  fechaCreacion: datetime("fecha_creacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  suscriptorIdx: index("idx_parametros_contables_suscriptor").on(table.suscriptorId),
+  tipoIdx: index("idx_parametros_contables_tipo").on(table.tipoParametro),
+}));
+
+export const saldosCuentas = mysqlTable("saldos_cuentas", {
+  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
+  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
+  cuentaId: char("cuenta_id", { length: 36 }).notNull().references(() => planCuentas.id, { onDelete: "cascade" }),
+  periodoId: char("periodo_id", { length: 36 }).notNull().references(() => periodosContables.id, { onDelete: "cascade" }),
+  saldoDebito: decimal("saldo_debito", { precision: 18, scale: 2 }).notNull().default("0.00"),
+  saldoCredito: decimal("saldo_credito", { precision: 18, scale: 2 }).notNull().default("0.00"),
+  fechaActualizacion: datetime("fecha_actualizacion").notNull().default(sql`NOW()`),
+}, (table) => ({
+  suscriptorIdx: index("idx_saldos_cuentas_suscriptor").on(table.suscriptorId),
+  cuentaIdx: index("idx_saldos_cuentas_cuenta").on(table.cuentaId),
+  periodoIdx: index("idx_saldos_cuentas_periodo").on(table.periodoId),
+  uniqueSaldo: uniqueIndex("uk_saldos_cuentas").on(table.suscriptorId, table.cuentaId, table.periodoId),
+}));
+
 // =====================================================================
 // SCHEMAS DE VALIDACIÓN CON ZOD
 // =====================================================================
@@ -435,5 +544,13 @@ export const insertUserSchema = createInsertSchema(usuarios).pick({
   suscriptorId: true,
 });
 
+export const insertSuscriptorSchema = createInsertSchema(suscriptores).omit({
+  id: true,
+  fechaCreacion: true,
+  fechaActualizacion: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof usuarios.$inferSelect;
+export type InsertSuscriptor = z.infer<typeof insertSuscriptorSchema>;
+export type Suscriptor = typeof suscriptores.$inferSelect;

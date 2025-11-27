@@ -1,4 +1,4 @@
-import { type User, type InsertUser, usuarios, suscriptores } from "@shared/schema";
+import { type User, type InsertUser, usuarios, suscriptores, type InsertSuscriptor, type Suscriptor } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 import { getDatabase } from "./database";
 
@@ -11,6 +11,9 @@ export interface IStorage {
   getUserByNitAndCopropiedad(nitUsuario: string, nitCopropiedad: string): Promise<User | undefined>;
   getUserWithSuscriptor(id: string): Promise<any>;
   createUser(user: InsertUser): Promise<User>;
+  getSuscriptor(id: string): Promise<Suscriptor | undefined>;
+  getSuscriptorByNit(nit: string): Promise<Suscriptor | undefined>;
+  createSuscriptor(suscriptor: InsertSuscriptor): Promise<Suscriptor>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -71,6 +74,25 @@ export class DatabaseStorage implements IStorage {
     await db.insert(usuarios).values(insertUser);
     const user = await db.select().from(usuarios).where(eq(usuarios.email, insertUser.email));
     return user[0];
+  }
+
+  async getSuscriptor(id: string): Promise<Suscriptor | undefined> {
+    const db = await getDatabase();
+    const result = await db.select().from(suscriptores).where(eq(suscriptores.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getSuscriptorByNit(nit: string): Promise<Suscriptor | undefined> {
+    const db = await getDatabase();
+    const result = await db.select().from(suscriptores).where(eq(suscriptores.nit, nit)).limit(1);
+    return result[0];
+  }
+
+  async createSuscriptor(insertSuscriptor: InsertSuscriptor): Promise<Suscriptor> {
+    const db = await getDatabase();
+    await db.insert(suscriptores).values(insertSuscriptor);
+    const suscriptor = await db.select().from(suscriptores).where(eq(suscriptores.nit, insertSuscriptor.nit));
+    return suscriptor[0];
   }
 }
 

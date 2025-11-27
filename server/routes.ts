@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import passport from "./auth";
 import authRouter from "./routes/auth";
+import planCuentasRouter from "./routes/plan-cuentas";
+import suscriptoresRouter from "./routes/suscriptores";
 import session from "express-session";
 import MemoryStore from "memorystore";
 
@@ -30,6 +32,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // API routes
   app.use("/api/auth", authRouter);
+  app.use("/api/plan-cuentas", planCuentasRouter);
+  app.use("/api/suscriptores", suscriptoresRouter);
 
   // put application routes here
   // prefix all routes with /api

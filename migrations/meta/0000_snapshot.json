@@ -1,0 +1,4023 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "6de4fd60-ef86-4480-a95b-35ecedbb0ab0",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "auditoria": {
+      "name": "auditoria",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "accion": {
+          "name": "accion",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tabla_afectada": {
+          "name": "tabla_afectada",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "registro_id": {
+          "name": "registro_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "datos_antiguos": {
+          "name": "datos_antiguos",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "datos_nuevos": {
+          "name": "datos_nuevos",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_auditoria_suscriptor": {
+          "name": "idx_auditoria_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "idx_auditoria_fecha": {
+          "name": "idx_auditoria_fecha",
+          "columns": [
+            "fecha"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "auditoria_suscriptor_id_suscriptores_id_fk": {
+          "name": "auditoria_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "auditoria",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "auditoria_usuario_id_usuarios_id_fk": {
+          "name": "auditoria_usuario_id_usuarios_id_fk",
+          "tableFrom": "auditoria",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "auditoria_id": {
+          "name": "auditoria_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "bancos": {
+      "name": "bancos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_bancos_suscriptor": {
+          "name": "idx_bancos_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "bancos_suscriptor_id_suscriptores_id_fk": {
+          "name": "bancos_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "bancos",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "bancos_id": {
+          "name": "bancos_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "catalog_estado": {
+      "name": "catalog_estado",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_catalog_estado_codigo": {
+          "name": "idx_catalog_estado_codigo",
+          "columns": [
+            "codigo"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "catalog_estado_id": {
+          "name": "catalog_estado_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "catalogo_niif": {
+      "name": "catalogo_niif",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nivel": {
+          "name": "nivel",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_catalogo_niif_codigo": {
+          "name": "idx_catalogo_niif_codigo",
+          "columns": [
+            "codigo"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "catalogo_niif_id": {
+          "name": "catalogo_niif_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "catalogo_puc": {
+      "name": "catalogo_puc",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nivel": {
+          "name": "nivel",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_catalogo_puc_codigo": {
+          "name": "idx_catalogo_puc_codigo",
+          "columns": [
+            "codigo"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "catalogo_puc_id": {
+          "name": "catalogo_puc_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "centros_costo": {
+      "name": "centros_costo",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_centros_costo_suscriptor": {
+          "name": "idx_centros_costo_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_centros_costo_nombre": {
+          "name": "uk_centros_costo_nombre",
+          "columns": [
+            "suscriptor_id",
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "centros_costo_suscriptor_id_suscriptores_id_fk": {
+          "name": "centros_costo_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "centros_costo",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "centros_costo_id": {
+          "name": "centros_costo_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "conceptos_exogena": {
+      "name": "conceptos_exogena",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "formato": {
+          "name": "formato",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_conceptos_exogena_suscriptor": {
+          "name": "idx_conceptos_exogena_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "conceptos_exogena_suscriptor_id_suscriptores_id_fk": {
+          "name": "conceptos_exogena_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "conceptos_exogena",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "conceptos_exogena_id": {
+          "name": "conceptos_exogena_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "conceptos_factura": {
+      "name": "conceptos_factura",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "factura_id": {
+          "name": "factura_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concepto": {
+          "name": "concepto",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cantidad": {
+          "name": "cantidad",
+          "type": "decimal(10,3)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'1.000'"
+        },
+        "valor_unitario": {
+          "name": "valor_unitario",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor_total": {
+          "name": "valor_total",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cuenta_id": {
+          "name": "cuenta_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "centro_costo_id": {
+          "name": "centro_costo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_conceptos_factura": {
+          "name": "idx_conceptos_factura",
+          "columns": [
+            "factura_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "conceptos_factura_factura_id_facturas_id_fk": {
+          "name": "conceptos_factura_factura_id_facturas_id_fk",
+          "tableFrom": "conceptos_factura",
+          "tableTo": "facturas",
+          "columnsFrom": [
+            "factura_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "conceptos_factura_cuenta_id_plan_cuentas_id_fk": {
+          "name": "conceptos_factura_cuenta_id_plan_cuentas_id_fk",
+          "tableFrom": "conceptos_factura",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "cuenta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "conceptos_factura_centro_costo_id_centros_costo_id_fk": {
+          "name": "conceptos_factura_centro_costo_id_centros_costo_id_fk",
+          "tableFrom": "conceptos_factura",
+          "tableTo": "centros_costo",
+          "columnsFrom": [
+            "centro_costo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "conceptos_factura_id": {
+          "name": "conceptos_factura_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "conceptos_ph": {
+      "name": "conceptos_ph",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tipo_concepto": {
+          "name": "tipo_concepto",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor_base": {
+          "name": "valor_base",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "aplica_por_coeficiente": {
+          "name": "aplica_por_coeficiente",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "aplica_por_area": {
+          "name": "aplica_por_area",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "cuenta_id": {
+          "name": "cuenta_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "centro_costo_id": {
+          "name": "centro_costo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "aplica_iva": {
+          "name": "aplica_iva",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "aplica_intereses": {
+          "name": "aplica_intereses",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "porcentaje_iva": {
+          "name": "porcentaje_iva",
+          "type": "decimal(5,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "periodo_desde": {
+          "name": "periodo_desde",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "periodo_hasta": {
+          "name": "periodo_hasta",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "es_constante": {
+          "name": "es_constante",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_conceptos_ph_suscriptor": {
+          "name": "idx_conceptos_ph_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "conceptos_ph_suscriptor_id_suscriptores_id_fk": {
+          "name": "conceptos_ph_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "conceptos_ph",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "conceptos_ph_cuenta_id_plan_cuentas_id_fk": {
+          "name": "conceptos_ph_cuenta_id_plan_cuentas_id_fk",
+          "tableFrom": "conceptos_ph",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "cuenta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "conceptos_ph_centro_costo_id_centros_costo_id_fk": {
+          "name": "conceptos_ph_centro_costo_id_centros_costo_id_fk",
+          "tableFrom": "conceptos_ph",
+          "tableTo": "centros_costo",
+          "columnsFrom": [
+            "centro_costo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "conceptos_ph_id": {
+          "name": "conceptos_ph_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "configuracion_suscriptor": {
+      "name": "configuracion_suscriptor",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "clave": {
+          "name": "clave",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor": {
+          "name": "valor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'texto'"
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_configuracion_suscriptor": {
+          "name": "idx_configuracion_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_configuracion_clave": {
+          "name": "uk_configuracion_clave",
+          "columns": [
+            "suscriptor_id",
+            "categoria",
+            "clave"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "configuracion_suscriptor_suscriptor_id_suscriptores_id_fk": {
+          "name": "configuracion_suscriptor_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "configuracion_suscriptor",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "configuracion_suscriptor_id": {
+          "name": "configuracion_suscriptor_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "cuentas_bancarias": {
+      "name": "cuentas_bancarias",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "banco_id": {
+          "name": "banco_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "numero_cuenta": {
+          "name": "numero_cuenta",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_cuenta": {
+          "name": "tipo_cuenta",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "titular": {
+          "name": "titular",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_cuentas_bancarias_suscriptor": {
+          "name": "idx_cuentas_bancarias_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "idx_cuentas_bancarias_banco": {
+          "name": "idx_cuentas_bancarias_banco",
+          "columns": [
+            "banco_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "cuentas_bancarias_suscriptor_id_suscriptores_id_fk": {
+          "name": "cuentas_bancarias_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "cuentas_bancarias",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "cuentas_bancarias_banco_id_bancos_id_fk": {
+          "name": "cuentas_bancarias_banco_id_bancos_id_fk",
+          "tableFrom": "cuentas_bancarias",
+          "tableTo": "bancos",
+          "columnsFrom": [
+            "banco_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "cuentas_bancarias_id": {
+          "name": "cuentas_bancarias_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "documentos_electronicos": {
+      "name": "documentos_electronicos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_documento": {
+          "name": "tipo_documento",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "referencia_externa": {
+          "name": "referencia_externa",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payload": {
+          "name": "payload",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "estado_envio": {
+          "name": "estado_envio",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pendiente'"
+        },
+        "respuesta": {
+          "name": "respuesta",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_envio": {
+          "name": "fecha_envio",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_documentos_electronicos_suscriptor": {
+          "name": "idx_documentos_electronicos_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "idx_documentos_electronicos_estado": {
+          "name": "idx_documentos_electronicos_estado",
+          "columns": [
+            "estado_envio"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "documentos_electronicos_suscriptor_id_suscriptores_id_fk": {
+          "name": "documentos_electronicos_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "documentos_electronicos",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "documentos_electronicos_id": {
+          "name": "documentos_electronicos_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "facturas": {
+      "name": "facturas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "numero_factura": {
+          "name": "numero_factura",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tercero_id": {
+          "name": "tercero_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "unidad_id": {
+          "name": "unidad_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "periodo_id": {
+          "name": "periodo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_factura": {
+          "name": "fecha_factura",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_vencimiento": {
+          "name": "fecha_vencimiento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descuentos": {
+          "name": "descuentos",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "iva": {
+          "name": "iva",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "total": {
+          "name": "total",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "saldo_pendiente": {
+          "name": "saldo_pendiente",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pendiente'"
+        },
+        "observaciones": {
+          "name": "observaciones",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_facturas_suscriptor": {
+          "name": "idx_facturas_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_facturas_numero": {
+          "name": "uk_facturas_numero",
+          "columns": [
+            "suscriptor_id",
+            "numero_factura"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "facturas_suscriptor_id_suscriptores_id_fk": {
+          "name": "facturas_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "facturas_tercero_id_terceros_id_fk": {
+          "name": "facturas_tercero_id_terceros_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "terceros",
+          "columnsFrom": [
+            "tercero_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "facturas_unidad_id_unidades_id_fk": {
+          "name": "facturas_unidad_id_unidades_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "unidades",
+          "columnsFrom": [
+            "unidad_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "facturas_periodo_id_periodos_contables_id_fk": {
+          "name": "facturas_periodo_id_periodos_contables_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "periodos_contables",
+          "columnsFrom": [
+            "periodo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "facturas_id": {
+          "name": "facturas_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "movimiento_detalle": {
+      "name": "movimiento_detalle",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "movimiento_id": {
+          "name": "movimiento_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cuenta_id": {
+          "name": "cuenta_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tercero_id": {
+          "name": "tercero_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "centro_costo_id": {
+          "name": "centro_costo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "debito": {
+          "name": "debito",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "credito": {
+          "name": "credito",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "base_gravable": {
+          "name": "base_gravable",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_detalle_movimiento": {
+          "name": "idx_detalle_movimiento",
+          "columns": [
+            "movimiento_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "movimiento_detalle_movimiento_id_movimientos_contables_id_fk": {
+          "name": "movimiento_detalle_movimiento_id_movimientos_contables_id_fk",
+          "tableFrom": "movimiento_detalle",
+          "tableTo": "movimientos_contables",
+          "columnsFrom": [
+            "movimiento_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "movimiento_detalle_cuenta_id_plan_cuentas_id_fk": {
+          "name": "movimiento_detalle_cuenta_id_plan_cuentas_id_fk",
+          "tableFrom": "movimiento_detalle",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "cuenta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "movimiento_detalle_tercero_id_terceros_id_fk": {
+          "name": "movimiento_detalle_tercero_id_terceros_id_fk",
+          "tableFrom": "movimiento_detalle",
+          "tableTo": "terceros",
+          "columnsFrom": [
+            "tercero_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "movimiento_detalle_centro_costo_id_centros_costo_id_fk": {
+          "name": "movimiento_detalle_centro_costo_id_centros_costo_id_fk",
+          "tableFrom": "movimiento_detalle",
+          "tableTo": "centros_costo",
+          "columnsFrom": [
+            "centro_costo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "movimiento_detalle_id": {
+          "name": "movimiento_detalle_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "movimientos_contables": {
+      "name": "movimientos_contables",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "numero": {
+          "name": "numero",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "periodo_id": {
+          "name": "periodo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'borrador'"
+        },
+        "usuario_creacion_id": {
+          "name": "usuario_creacion_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "centro_costo_id": {
+          "name": "centro_costo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "partida_presupuestal_id": {
+          "name": "partida_presupuestal_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "conciliado": {
+          "name": "conciliado",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "fecha_conciliacion": {
+          "name": "fecha_conciliacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_movimientos_suscriptor": {
+          "name": "idx_movimientos_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_movimientos_numero": {
+          "name": "uk_movimientos_numero",
+          "columns": [
+            "suscriptor_id",
+            "numero"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "movimientos_contables_suscriptor_id_suscriptores_id_fk": {
+          "name": "movimientos_contables_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "movimientos_contables",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "movimientos_contables_periodo_id_periodos_contables_id_fk": {
+          "name": "movimientos_contables_periodo_id_periodos_contables_id_fk",
+          "tableFrom": "movimientos_contables",
+          "tableTo": "periodos_contables",
+          "columnsFrom": [
+            "periodo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "movimientos_contables_usuario_creacion_id_usuarios_id_fk": {
+          "name": "movimientos_contables_usuario_creacion_id_usuarios_id_fk",
+          "tableFrom": "movimientos_contables",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_creacion_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "movimientos_contables_centro_costo_id_centros_costo_id_fk": {
+          "name": "movimientos_contables_centro_costo_id_centros_costo_id_fk",
+          "tableFrom": "movimientos_contables",
+          "tableTo": "centros_costo",
+          "columnsFrom": [
+            "centro_costo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "movimientos_contables_partida_presupuestal_id_partidas_presupuestales_id_fk": {
+          "name": "movimientos_contables_partida_presupuestal_id_partidas_presupuestales_id_fk",
+          "tableFrom": "movimientos_contables",
+          "tableTo": "partidas_presupuestales",
+          "columnsFrom": [
+            "partida_presupuestal_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "movimientos_contables_id": {
+          "name": "movimientos_contables_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "pagos": {
+      "name": "pagos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "factura_id": {
+          "name": "factura_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_pago": {
+          "name": "fecha_pago",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valor_pagado": {
+          "name": "valor_pagado",
+          "type": "decimal(15,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "metodo_pago": {
+          "name": "metodo_pago",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "referencia_pago": {
+          "name": "referencia_pago",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "observaciones": {
+          "name": "observaciones",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usuario_registro_id": {
+          "name": "usuario_registro_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_pagos_factura": {
+          "name": "idx_pagos_factura",
+          "columns": [
+            "factura_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "pagos_suscriptor_id_suscriptores_id_fk": {
+          "name": "pagos_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "pagos",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pagos_factura_id_facturas_id_fk": {
+          "name": "pagos_factura_id_facturas_id_fk",
+          "tableFrom": "pagos",
+          "tableTo": "facturas",
+          "columnsFrom": [
+            "factura_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pagos_usuario_registro_id_usuarios_id_fk": {
+          "name": "pagos_usuario_registro_id_usuarios_id_fk",
+          "tableFrom": "pagos",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_registro_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "pagos_id": {
+          "name": "pagos_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "parametros_contables": {
+      "name": "parametros_contables",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_parametro": {
+          "name": "tipo_parametro",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cuenta_id": {
+          "name": "cuenta_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "centro_costo_id": {
+          "name": "centro_costo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_parametros_contables_suscriptor": {
+          "name": "idx_parametros_contables_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "idx_parametros_contables_tipo": {
+          "name": "idx_parametros_contables_tipo",
+          "columns": [
+            "tipo_parametro"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "parametros_contables_suscriptor_id_suscriptores_id_fk": {
+          "name": "parametros_contables_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "parametros_contables",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "parametros_contables_cuenta_id_plan_cuentas_id_fk": {
+          "name": "parametros_contables_cuenta_id_plan_cuentas_id_fk",
+          "tableFrom": "parametros_contables",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "cuenta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "parametros_contables_centro_costo_id_centros_costo_id_fk": {
+          "name": "parametros_contables_centro_costo_id_centros_costo_id_fk",
+          "tableFrom": "parametros_contables",
+          "tableTo": "centros_costo",
+          "columnsFrom": [
+            "centro_costo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "parametros_contables_id": {
+          "name": "parametros_contables_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "partidas_presupuestales": {
+      "name": "partidas_presupuestales",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "monto_aprobado": {
+          "name": "monto_aprobado",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "saldo": {
+          "name": "saldo",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "estado": {
+          "name": "estado",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_partidas_presupuestales_suscriptor": {
+          "name": "idx_partidas_presupuestales_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "partidas_presupuestales_suscriptor_id_suscriptores_id_fk": {
+          "name": "partidas_presupuestales_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "partidas_presupuestales",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "partidas_presupuestales_id": {
+          "name": "partidas_presupuestales_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "periodos_contables": {
+      "name": "periodos_contables",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ano": {
+          "name": "ano",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mes": {
+          "name": "mes",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_inicio": {
+          "name": "fecha_inicio",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_fin": {
+          "name": "fecha_fin",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'abierto'"
+        },
+        "fecha_cierre": {
+          "name": "fecha_cierre",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usuario_cierre_id": {
+          "name": "usuario_cierre_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_periodos_suscriptor": {
+          "name": "idx_periodos_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_periodos_ano_mes": {
+          "name": "uk_periodos_ano_mes",
+          "columns": [
+            "suscriptor_id",
+            "ano",
+            "mes"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "periodos_contables_suscriptor_id_suscriptores_id_fk": {
+          "name": "periodos_contables_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "periodos_contables",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "periodos_contables_usuario_cierre_id_usuarios_id_fk": {
+          "name": "periodos_contables_usuario_cierre_id_usuarios_id_fk",
+          "tableFrom": "periodos_contables",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_cierre_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "periodos_contables_id": {
+          "name": "periodos_contables_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "plan_cuentas": {
+      "name": "plan_cuentas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nivel": {
+          "name": "nivel",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "padre_id": {
+          "name": "padre_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "es_debito": {
+          "name": "es_debito",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "registra_tercero": {
+          "name": "registra_tercero",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "requiere_centro_costo": {
+          "name": "requiere_centro_costo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_plan_cuentas_suscriptor": {
+          "name": "idx_plan_cuentas_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_plan_cuentas_codigo": {
+          "name": "uk_plan_cuentas_codigo",
+          "columns": [
+            "suscriptor_id",
+            "codigo"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "plan_cuentas_suscriptor_id_suscriptores_id_fk": {
+          "name": "plan_cuentas_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "plan_cuentas",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "plan_cuentas_padre_id_plan_cuentas_id_fk": {
+          "name": "plan_cuentas_padre_id_plan_cuentas_id_fk",
+          "tableFrom": "plan_cuentas",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "padre_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "plan_cuentas_id": {
+          "name": "plan_cuentas_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "plan_cuentas_exogena": {
+      "name": "plan_cuentas_exogena",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cuenta_id": {
+          "name": "cuenta_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exogena_id": {
+          "name": "exogena_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "formato": {
+          "name": "formato",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "observaciones": {
+          "name": "observaciones",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "uk_plan_cuentas_exogena": {
+          "name": "uk_plan_cuentas_exogena",
+          "columns": [
+            "suscriptor_id",
+            "cuenta_id",
+            "exogena_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "plan_cuentas_exogena_suscriptor_id_suscriptores_id_fk": {
+          "name": "plan_cuentas_exogena_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "plan_cuentas_exogena",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "plan_cuentas_exogena_cuenta_id_plan_cuentas_id_fk": {
+          "name": "plan_cuentas_exogena_cuenta_id_plan_cuentas_id_fk",
+          "tableFrom": "plan_cuentas_exogena",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "cuenta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "plan_cuentas_exogena_exogena_id_conceptos_exogena_id_fk": {
+          "name": "plan_cuentas_exogena_exogena_id_conceptos_exogena_id_fk",
+          "tableFrom": "plan_cuentas_exogena",
+          "tableTo": "conceptos_exogena",
+          "columnsFrom": [
+            "exogena_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "plan_cuentas_exogena_id": {
+          "name": "plan_cuentas_exogena_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "prefijos": {
+      "name": "prefijos",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_transaccion_id": {
+          "name": "tipo_transaccion_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "prefijo": {
+          "name": "prefijo",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "numeracion_actual": {
+          "name": "numeracion_actual",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "uk_prefijos_tipo": {
+          "name": "uk_prefijos_tipo",
+          "columns": [
+            "suscriptor_id",
+            "tipo_transaccion_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "prefijos_suscriptor_id_suscriptores_id_fk": {
+          "name": "prefijos_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "prefijos",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "prefijos_tipo_transaccion_id_tipos_transaccion_id_fk": {
+          "name": "prefijos_tipo_transaccion_id_tipos_transaccion_id_fk",
+          "tableFrom": "prefijos",
+          "tableTo": "tipos_transaccion",
+          "columnsFrom": [
+            "tipo_transaccion_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "prefijos_id": {
+          "name": "prefijos_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "reservas": {
+      "name": "reservas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "zona_comun_id": {
+          "name": "zona_comun_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "unidad_id": {
+          "name": "unidad_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "usuario_solicita_id": {
+          "name": "usuario_solicita_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_reserva": {
+          "name": "fecha_reserva",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "hora_inicio": {
+          "name": "hora_inicio",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "hora_fin": {
+          "name": "hora_fin",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pendiente'"
+        },
+        "observaciones": {
+          "name": "observaciones",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_reservas_zona_fecha": {
+          "name": "idx_reservas_zona_fecha",
+          "columns": [
+            "zona_comun_id",
+            "fecha_reserva"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reservas_suscriptor_id_suscriptores_id_fk": {
+          "name": "reservas_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "reservas",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reservas_zona_comun_id_zonas_comunes_id_fk": {
+          "name": "reservas_zona_comun_id_zonas_comunes_id_fk",
+          "tableFrom": "reservas",
+          "tableTo": "zonas_comunes",
+          "columnsFrom": [
+            "zona_comun_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reservas_unidad_id_unidades_id_fk": {
+          "name": "reservas_unidad_id_unidades_id_fk",
+          "tableFrom": "reservas",
+          "tableTo": "unidades",
+          "columnsFrom": [
+            "unidad_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reservas_usuario_solicita_id_usuarios_id_fk": {
+          "name": "reservas_usuario_solicita_id_usuarios_id_fk",
+          "tableFrom": "reservas",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_solicita_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "reservas_id": {
+          "name": "reservas_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "roles": {
+      "name": "roles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_roles_suscriptor": {
+          "name": "idx_roles_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "roles_suscriptor_id_suscriptores_id_fk": {
+          "name": "roles_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "roles",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "roles_id": {
+          "name": "roles_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "saldos_cuentas": {
+      "name": "saldos_cuentas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cuenta_id": {
+          "name": "cuenta_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "periodo_id": {
+          "name": "periodo_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "saldo_debito": {
+          "name": "saldo_debito",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "saldo_credito": {
+          "name": "saldo_credito",
+          "type": "decimal(18,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0.00'"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_saldos_cuentas_suscriptor": {
+          "name": "idx_saldos_cuentas_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "idx_saldos_cuentas_cuenta": {
+          "name": "idx_saldos_cuentas_cuenta",
+          "columns": [
+            "cuenta_id"
+          ],
+          "isUnique": false
+        },
+        "idx_saldos_cuentas_periodo": {
+          "name": "idx_saldos_cuentas_periodo",
+          "columns": [
+            "periodo_id"
+          ],
+          "isUnique": false
+        },
+        "uk_saldos_cuentas": {
+          "name": "uk_saldos_cuentas",
+          "columns": [
+            "suscriptor_id",
+            "cuenta_id",
+            "periodo_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "saldos_cuentas_suscriptor_id_suscriptores_id_fk": {
+          "name": "saldos_cuentas_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "saldos_cuentas",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "saldos_cuentas_cuenta_id_plan_cuentas_id_fk": {
+          "name": "saldos_cuentas_cuenta_id_plan_cuentas_id_fk",
+          "tableFrom": "saldos_cuentas",
+          "tableTo": "plan_cuentas",
+          "columnsFrom": [
+            "cuenta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "saldos_cuentas_periodo_id_periodos_contables_id_fk": {
+          "name": "saldos_cuentas_periodo_id_periodos_contables_id_fk",
+          "tableFrom": "saldos_cuentas",
+          "tableTo": "periodos_contables",
+          "columnsFrom": [
+            "periodo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "saldos_cuentas_id": {
+          "name": "saldos_cuentas_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "suscriptores": {
+      "name": "suscriptores",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nit": {
+          "name": "nit",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "subdominio": {
+          "name": "subdominio",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email_contacto": {
+          "name": "email_contacto",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "direccion": {
+          "name": "direccion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_suscriptores_nit": {
+          "name": "idx_suscriptores_nit",
+          "columns": [
+            "nit"
+          ],
+          "isUnique": false
+        },
+        "idx_suscriptores_subdominio": {
+          "name": "idx_suscriptores_subdominio",
+          "columns": [
+            "subdominio"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "suscriptores_id": {
+          "name": "suscriptores_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "suscriptores_nit_unique": {
+          "name": "suscriptores_nit_unique",
+          "columns": [
+            "nit"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "terceros": {
+      "name": "terceros",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_persona": {
+          "name": "tipo_persona",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_identificacion": {
+          "name": "tipo_identificacion",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "numero_identificacion": {
+          "name": "numero_identificacion",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre_completo": {
+          "name": "nombre_completo",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "razon_social": {
+          "name": "razon_social",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "direccion": {
+          "name": "direccion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_terceros_suscriptor": {
+          "name": "idx_terceros_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_terceros_identificacion": {
+          "name": "uk_terceros_identificacion",
+          "columns": [
+            "suscriptor_id",
+            "numero_identificacion"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "terceros_suscriptor_id_suscriptores_id_fk": {
+          "name": "terceros_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "terceros",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "terceros_id": {
+          "name": "terceros_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "tipos_comprobantes": {
+      "name": "tipos_comprobantes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_tipos_comprobantes_suscriptor": {
+          "name": "idx_tipos_comprobantes_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tipos_comprobantes_suscriptor_id_suscriptores_id_fk": {
+          "name": "tipos_comprobantes_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "tipos_comprobantes",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "tipos_comprobantes_id": {
+          "name": "tipos_comprobantes_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "tipos_transaccion": {
+      "name": "tipos_transaccion",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_tipos_transaccion_suscriptor": {
+          "name": "idx_tipos_transaccion_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tipos_transaccion_suscriptor_id_suscriptores_id_fk": {
+          "name": "tipos_transaccion_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "tipos_transaccion",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "tipos_transaccion_id": {
+          "name": "tipos_transaccion_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "unidades": {
+      "name": "unidades",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo_unidad": {
+          "name": "codigo_unidad",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tipo_unidad": {
+          "name": "tipo_unidad",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "propietario_id": {
+          "name": "propietario_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "inquilino_id": {
+          "name": "inquilino_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "area": {
+          "name": "area",
+          "type": "decimal(10,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "coeficiente": {
+          "name": "coeficiente",
+          "type": "decimal(5,4)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_unidades_suscriptor": {
+          "name": "idx_unidades_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        },
+        "uk_unidades_codigo": {
+          "name": "uk_unidades_codigo",
+          "columns": [
+            "suscriptor_id",
+            "codigo_unidad"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "unidades_suscriptor_id_suscriptores_id_fk": {
+          "name": "unidades_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "unidades",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "unidades_propietario_id_terceros_id_fk": {
+          "name": "unidades_propietario_id_terceros_id_fk",
+          "tableFrom": "unidades",
+          "tableTo": "terceros",
+          "columnsFrom": [
+            "propietario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "unidades_inquilino_id_terceros_id_fk": {
+          "name": "unidades_inquilino_id_terceros_id_fk",
+          "tableFrom": "unidades",
+          "tableTo": "terceros",
+          "columnsFrom": [
+            "inquilino_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "unidades_id": {
+          "name": "unidades_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "usuarios": {
+      "name": "usuarios",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "apellido": {
+          "name": "apellido",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nit": {
+          "name": "nit",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rol_id": {
+          "name": "rol_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "ultimo_login": {
+          "name": "ultimo_login",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_usuarios_email": {
+          "name": "idx_usuarios_email",
+          "columns": [
+            "email"
+          ],
+          "isUnique": false
+        },
+        "idx_usuarios_nit": {
+          "name": "idx_usuarios_nit",
+          "columns": [
+            "nit"
+          ],
+          "isUnique": false
+        },
+        "idx_usuarios_suscriptor": {
+          "name": "idx_usuarios_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "usuarios_rol_id_roles_id_fk": {
+          "name": "usuarios_rol_id_roles_id_fk",
+          "tableFrom": "usuarios",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "rol_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "usuarios_suscriptor_id_suscriptores_id_fk": {
+          "name": "usuarios_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "usuarios",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "usuarios_id": {
+          "name": "usuarios_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "usuarios_email_unique": {
+          "name": "usuarios_email_unique",
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "zonas_comunes": {
+      "name": "zonas_comunes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(UUID())"
+        },
+        "suscriptor_id": {
+          "name": "suscriptor_id",
+          "type": "char(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "capacidad_maxima": {
+          "name": "capacidad_maxima",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'disponible'"
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "NOW()"
+        }
+      },
+      "indexes": {
+        "idx_zonas_comunes_suscriptor": {
+          "name": "idx_zonas_comunes_suscriptor",
+          "columns": [
+            "suscriptor_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "zonas_comunes_suscriptor_id_suscriptores_id_fk": {
+          "name": "zonas_comunes_suscriptor_id_suscriptores_id_fk",
+          "tableFrom": "zonas_comunes",
+          "tableTo": "suscriptores",
+          "columnsFrom": [
+            "suscriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "zonas_comunes_id": {
+          "name": "zonas_comunes_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
