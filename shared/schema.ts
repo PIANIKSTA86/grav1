@@ -120,7 +120,6 @@ export const planCuentas = mysqlTable("plan_cuentas", {
   ruta: varchar("ruta", { length: 500 }),
   rutaCodigo: varchar("ruta_codigo", { length: 500 }),
   padreId: char("padre_id", { length: 36 }).references((): any => planCuentas.id, { onDelete: "set null" }),
-  esDebito: boolean("es_debito"),
   registraTercero: boolean("registra_tercero").notNull().default(false),
   requiereCentroCosto: boolean("requiere_centro_costo").notNull().default(false),
   requierePresupuesto: boolean("requiere_presupuesto").notNull().default(false),
