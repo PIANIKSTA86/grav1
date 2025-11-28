@@ -1,12 +1,14 @@
-// routes/plan-cuentas.ts
 import { Router } from "express";
 import { getDatabase } from "../database";
 import { planCuentas, suscriptores } from "../../shared/schema";
 import { asignarPlantillaPUC, suscriptorTienePlanCuentas } from "../../shared/utils/plan-cuentas";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 import type { Request, Response } from "express";
+import { z } from "zod";
 
 const router = Router();
+
+const uuidSchema = z.string().uuid("El ID debe ser un UUID válido de 36 caracteres");
 
 // POST /api/plan-cuentas/asignar-plantilla/:suscriptorId
 // Asigna la plantilla del PUC a un suscriptor específico
@@ -14,6 +16,15 @@ router.post("/asignar-plantilla/:suscriptorId", async (req: Request, res: Respon
   try {
     const db = await getDatabase();
     const { suscriptorId } = req.params;
+
+    // Validar UUID
+    const validation = uuidSchema.safeParse(suscriptorId);
+    if (!validation.success) {
+      return res.status(400).json({
+        success: false,
+        message: validation.error.errors[0].message
+      });
+    }
 
     if (!suscriptorId) {
       return res.status(400).json({
@@ -232,6 +243,15 @@ router.get("/:suscriptorId/jerarquia", async (req: Request, res: Response) => {
     const db = await getDatabase();
     const { suscriptorId } = req.params;
 
+    // Validar UUID
+    const validation = uuidSchema.safeParse(suscriptorId);
+    if (!validation.success) {
+      return res.status(400).json({
+        success: false,
+        message: validation.error.errors[0].message
+      });
+    }
+
     if (!suscriptorId) {
       return res.status(400).json({
         success: false,
@@ -242,34 +262,29 @@ router.get("/:suscriptorId/jerarquia", async (req: Request, res: Response) => {
     const cuentas = await db
       .select()
       .from(planCuentas)
-      .where(eq(planCuentas.suscriptorId, suscriptorId));
+      .where(eq(planCuentas.suscriptorId, suscriptorId))
+      .orderBy(asc(planCuentas.rutaCodigo));
 
-    // Construir jerarquía
-    const cuentaMap = new Map();
-    const raices: any[] = [];
+    // Convertir lista plana en árbol
+    const map: { [key: string]: any } = {};
+    const tree: any[] = [];
 
-    // Primero, indexar todas las cuentas
-    cuentas.forEach(cuenta => {
-      cuentaMap.set(cuenta.id, { ...cuenta, hijos: [] });
+    cuentas.forEach((row: any) => {
+      row.hijos = [];
+      map[row.id] = row;
     });
 
-    // Luego, construir la jerarquía
-    cuentas.forEach(cuenta => {
-      const cuentaNode = cuentaMap.get(cuenta.id);
-
-      if (cuenta.padreId) {
-        const padre = cuentaMap.get(cuenta.padreId);
-        if (padre) {
-          padre.hijos.push(cuentaNode);
-        }
+    cuentas.forEach((row: any) => {
+      if (row.padreId && map[row.padreId]) {
+        map[row.padreId].hijos.push(row);
       } else {
-        raices.push(cuentaNode);
+        tree.push(row);
       }
     });
 
     res.json({
       success: true,
-      data: raices,
+      data: tree,
       total: cuentas.length
     });
 

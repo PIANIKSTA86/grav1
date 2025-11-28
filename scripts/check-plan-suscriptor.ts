@@ -6,15 +6,15 @@ import { eq } from "drizzle-orm";
 async function checkPlanCuentas() {
   try {
     const db = await getDatabase();
-    const suscriptorId = '3d38ab84-bca9-46'; // ID del suscriptor Empresa Test S.A.S.
+    const suscriptorId = '550e8400-e29b-41'; // ID del suscriptor actual
 
     const result = await db
       .select()
       .from(planCuentas)
       .where(eq(planCuentas.suscriptorId, suscriptorId))
-      .limit(5);
+      .limit(10);
 
-    console.log('Plan de cuentas para Empresa Test S.A.S.:');
+    console.log('Plan de cuentas para el suscriptor actual:');
     console.log('Número de cuentas encontradas:', result.length);
 
     if (result.length > 0) {

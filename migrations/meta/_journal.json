@@ -15,6 +15,13 @@
       "when": 1764204658013,
       "tag": "0001_real_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1764354704819,
+      "tag": "0002_talented_guardian",
+      "breakpoints": true
     }
   ]
 }

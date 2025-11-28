@@ -49,7 +49,7 @@ export function usePlanCuentas(): UsePlanCuentasReturn {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/plan-cuentas/${suscriptor.id}/jerarquia`);
+      const response = await fetch(`/api/plan-cuentas/${suscriptor.id}/jerarquia?t=${Date.now()}`);
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);

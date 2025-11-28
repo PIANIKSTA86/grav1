@@ -12,10 +12,24 @@ import {
   json,
   mysqlEnum,
   index,
-  uniqueIndex
+  uniqueIndex,
+  customType
 } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+const uuidBinary = customType<{ data: string; driverData: Buffer }>({
+  dataType(config) {
+    return 'binary(16)';
+  },
+  toDriver(value: string): Buffer {
+    return Buffer.from(value.replace(/-/g, ''), 'hex');
+  },
+  fromDriver(value: Buffer): string {
+    const hex = value.toString('hex');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+  },
+});
 
 // =====================================================================
 // TABLAS PRINCIPALES Y DE GESTIÓN DE SUSCRIPTORES
@@ -108,8 +122,8 @@ export const unidades = mysqlTable("unidades", {
 }));
 
 export const planCuentas = mysqlTable("plan_cuentas", {
-  id: char("id", { length: 36 }).primaryKey().default(sql`(UUID())`),
-  suscriptorId: char("suscriptor_id", { length: 36 }).references(() => suscriptores.id, { onDelete: "cascade" }),
+  id: uuidBinary("id").primaryKey().default(sql`UNHEX(REPLACE(UUID(), '-', ''))`),
+  suscriptorId: char("suscriptor_id", { length: 36 }).notNull().references(() => suscriptores.id, { onDelete: "cascade" }),
   esPlantilla: boolean("es_plantilla").notNull().default(false),
   codigo: varchar("codigo", { length: 20 }).notNull(),
   nombre: varchar("nombre", { length: 255 }).notNull(),

@@ -5,6 +5,14 @@ import { eq, count } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 /**
+ * Convierte un Buffer de 16 bytes UUID binario a string UUID
+ */
+function bufferToUuid(buffer: Buffer): string {
+  const hex = buffer.toString('hex');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
+
+/**
  * Asigna la plantilla del PUC a un suscriptor específico
  * Copia todas las cuentas de plantilla (es_plantilla = true) al suscriptor
  */
@@ -67,30 +75,33 @@ export async function asignarPlantillaPUC(suscriptorId: string): Promise<{
     console.log(`📋 Copiando ${plantillas.length} cuentas de plantilla...`);
 
     // Función helper para verificar si padreId es null
-    const isPadreIdNull = (padreId: Buffer | null): boolean => {
+    const isPadreIdNull = (padreId: string | null): boolean => {
       return !padreId || padreId.length === 0;
     };
 
     // Debug: verificar estructura de plantillas
     console.log(`🔍 Debug: Primeras 3 plantillas:`);
     plantillas.slice(0, 3).forEach((p, i) => {
-      console.log(`  ${i + 1}. ${p.codigo} - padreId: ${p.padreId} (isNull: ${isPadreIdNull(p.padreId)})`);
+      console.log(`  ${i + 1}. ${p.codigo} - padreId: ${p.padreId ? p.padreId : 'null'} (isNull: ${isPadreIdNull(p.padreId)})`);
     });
 
     // Crear mapa de IDs antiguos a nuevos para mantener referencias padre-hijo
     const idMap = new Map<string, string>();
 
     // Procesar todas las plantillas en orden jerárquico (ordenadas por nivel)
+    console.log('🔄 Iniciando procesamiento de plantillas...');
     for (const plantilla of plantillas) {
       const nuevoId = randomUUID();
 
       // Determinar el nuevo padreId
       let nuevoPadreId = null;
       if (!isPadreIdNull(plantilla.padreId)) {
-        const padreIdString = plantilla.padreId!.toString('utf8');
+        const padreIdString = plantilla.padreId!;
         nuevoPadreId = idMap.get(padreIdString) || null;
         if (!nuevoPadreId) {
           console.warn(`⚠️ Padre no encontrado para cuenta ${plantilla.codigo} (padreId: ${padreIdString}), asignando null...`);
+          console.warn(`   plantilla.id: ${plantilla.id}`);
+          console.warn(`   idMap tiene ${idMap.size} entradas`);
         }
       }
 
