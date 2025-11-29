@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, ChevronRight, ChevronDown, Edit, Trash2, Loader2, AlertCircle, Info, Folder, FileText } from "lucide-react";
+import { Plus, Search, ChevronRight, ChevronDown, Edit, Trash2, Loader2, AlertCircle, Info, Expand, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -8,38 +8,182 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { usePlanCuentas, type Cuenta } from "@/hooks/use-plan-cuentas";
 
+interface CuentaNodeProps {
+  cuenta: Cuenta;
+  depth: number;
+  expandedItems: Set<string>;
+  onToggle: (id: string) => void;
+  onCreate: (parent: Cuenta | null) => void;
+  onEdit: (cuenta: Cuenta) => void;
+  onDelete: (cuenta: Cuenta) => void;
+}
+
+function CuentaNode({ cuenta, depth, expandedItems, onToggle, onCreate, onEdit, onDelete }: CuentaNodeProps) {
+  const hasChildren = cuenta.hijos && cuenta.hijos.length > 0;
+  const isExpanded = expandedItems.has(cuenta.id);
+  const paddingLeft = depth * 20;
+
+  // Iconos por categoría de nivel
+  const getIcon = (categoria: string | null) => {
+    switch (categoria) {
+      case 'clase': return '📘';
+      case 'grupo': return '🗂️';
+      case 'cuenta': return '💼';
+      case 'subcuenta': return '📄';
+      case 'auxiliar': return '🔹';
+      default: return '📄';
+    }
+  };
+
+  const getCategoriaColor = (categoria: string | null) => {
+    switch (categoria) {
+      case 'clase': return 'text-blue-600 font-bold';
+      case 'grupo': return 'text-green-600';
+      case 'cuenta': return 'text-orange-600';
+      case 'subcuenta': return 'text-purple-600';
+      case 'auxiliar': return 'text-gray-600';
+      default: return 'text-foreground';
+    }
+  };
+
+  return (
+    <div className="relative">
+      <div
+        className={`flex items-center gap-3 py-2 px-3 hover:bg-accent/50 rounded-md cursor-pointer transition-colors group ${
+          depth === 0 ? "bg-muted/20 font-medium" : ""
+        }`}
+        style={{ paddingLeft: `${paddingLeft + 16}px` }}
+        onClick={() => hasChildren && onToggle(cuenta.id)}
+      >
+        {/* Expand/Collapse */}
+        {hasChildren ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle(cuenta.id);
+            }}
+            className="flex-shrink-0"
+          >
+            {isExpanded ? (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            )}
+          </button>
+        ) : (
+          <div className="w-4" />
+        )}
+
+        {/* Icono */}
+        <span className="text-lg flex-shrink-0">{getIcon(cuenta.categoriaNivel)}</span>
+
+        {/* Código y nombre */}
+        <span className="font-mono text-sm text-primary font-medium min-w-[80px]">{cuenta.codigo}</span>
+        <span className={`flex-1 ${getCategoriaColor(cuenta.categoriaNivel)}`}>{cuenta.nombre}</span>
+
+        {/* Información adicional */}
+        <div className="flex gap-1 flex-wrap">
+          <Badge variant="outline" className="text-xs">
+            {cuenta.tipo}
+          </Badge>
+          {cuenta.naturaleza && (
+            <Badge variant={cuenta.naturaleza === 'D' ? 'default' : 'secondary'} className="text-xs">
+              {cuenta.naturaleza === 'D' ? 'D' : 'C'}
+            </Badge>
+          )}
+          {cuenta.registraTercero && (
+            <Badge variant="outline" className="text-xs">
+              Tercero
+            </Badge>
+          )}
+        </div>
+
+        {/* Acciones CRUD */}
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 hover:bg-accent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCreate(cuenta);
+                }}
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Crear subcuenta</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 hover:bg-accent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(cuenta);
+                }}
+              >
+                <Edit className="h-3 w-3" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Editar cuenta</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(cuenta);
+                }}
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Eliminar cuenta</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      </div>
+
+      {/* Hijos */}
+      {hasChildren && isExpanded && (
+        <div className="ml-4 border-l border-border/50 pl-2">
+          {cuenta.hijos!.map(child => (
+            <CuentaNode
+              key={child.id}
+              cuenta={child}
+              depth={depth + 1}
+              expandedItems={expandedItems}
+              onToggle={onToggle}
+              onCreate={onCreate}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PlanCuentas() {
   const { cuentas, loading, error, refetch } = usePlanCuentas();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-
-  const getCategoriaStyles = (categoria: string | null) => {
-    switch (categoria) {
-      case 'clase':
-        return 'font-bold text-blue-600';
-      case 'grupo':
-        return 'text-green-600';
-      case 'cuenta':
-        return 'text-orange-600';
-      case 'subcuenta':
-        return 'text-purple-600';
-      case 'auxiliar':
-        return 'text-gray-600';
-      default:
-        return 'text-foreground';
-    }
-  };
-
-  const getIconColor = (categoria: string | null) => {
-    switch (categoria) {
-      case 'clase': return 'text-blue-500';
-      case 'grupo': return 'text-green-500';
-      case 'cuenta': return 'text-orange-500';
-      case 'subcuenta': return 'text-purple-500';
-      case 'auxiliar': return 'text-gray-500';
-      default: return 'text-muted-foreground';
-    }
-  };
 
   // Filtrar cuentas basado en el término de búsqueda
   const filteredCuentas = cuentas.filter(cuenta =>
@@ -79,238 +223,145 @@ export default function PlanCuentas() {
     });
   };
 
-  const renderCuenta = (cuenta: Cuenta, depth: number = 0, isLast: boolean = false, parentExpanded: boolean = true) => {
-    const hasChildren = cuenta.hijos && cuenta.hijos.length > 0;
-    const isExpanded = expandedItems.has(cuenta.id);
-    const paddingLeft = depth * 24;
+  const expandAll = () => {
+    const allIds = new Set<string>();
+    const collectIds = (cuentas: Cuenta[]) => {
+      cuentas.forEach(cuenta => {
+        if (cuenta.hijos && cuenta.hijos.length > 0) {
+          allIds.add(cuenta.id);
+          collectIds(cuenta.hijos);
+        }
+      });
+    };
+    collectIds(displayCuentas);
+    setExpandedItems(allIds);
+  };
 
-    return (
-      <div key={cuenta.id} className="relative group" data-testid={`cuenta-${cuenta.id}`}>
-        {/* Líneas de conexión jerárquica */}
-        {depth > 0 && (
-          <>
-            {/* Línea vertical desde el padre */}
-            <div
-              className="absolute left-0 top-0 w-px bg-border"
-              style={{
-                left: `${paddingLeft - 12}px`,
-                height: '50%',
-                top: '0'
-              }}
-            />
-            {/* Línea horizontal al elemento */}
-            <div
-              className="absolute top-1/2 w-4 h-px bg-border"
-              style={{
-                left: `${paddingLeft - 12}px`,
-                transform: 'translateY(-50%)'
-              }}
-            />
-          </>
-        )}
+  const collapseAll = () => {
+    setExpandedItems(new Set());
+  };
 
-        <div
-          className={`flex items-center gap-2 py-3 px-4 hover:bg-accent/50 active:bg-accent rounded-md cursor-pointer transition-colors ${
-            depth === 0 ? "font-semibold bg-muted/30" : ""
-          }`}
-          style={{ paddingLeft: `${paddingLeft + 16}px` }}
-          onClick={() => hasChildren && toggleExpanded(cuenta.id)}
-        >
-          {hasChildren ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 p-0 hover:bg-accent"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleExpanded(cuenta.id);
-              }}
-            >
-              {isExpanded ? (
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              )}
-            </Button>
-          ) : (
-            <div className="w-6" />
-          )}
-          {hasChildren ? (
-            <Folder className={`h-4 w-4 ${getIconColor(cuenta.categoriaNivel)} shrink-0`} />
-          ) : (
-            <FileText className={`h-4 w-4 ${getIconColor(cuenta.categoriaNivel)} shrink-0`} />
-          )}
-          <div className="flex items-center gap-1">
-            {Array.from({ length: depth }, (_, i) => (
-              <div key={i} className="w-1 h-1 bg-muted-foreground rounded-full" />
-            ))}
-          </div>
-          <span className="font-mono text-sm min-w-[80px] text-primary font-medium">{cuenta.codigo}</span>
-          <span className={`flex-1 ${getCategoriaStyles(cuenta.categoriaNivel)}`}>{cuenta.nombre}</span>
-          <div className="flex gap-2 flex-wrap">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge variant="outline" className="text-xs cursor-help">
-                  {cuenta.tipo}
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Tipo de cuenta: {cuenta.tipo}</p>
-              </TooltipContent>
-            </Tooltip>
-            {cuenta.naturaleza && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Badge variant={cuenta.naturaleza === 'D' ? 'default' : 'secondary'} className="text-xs cursor-help">
-                    {cuenta.naturaleza === 'D' ? 'Débito' : 'Crédito'}
-                  </Badge>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Naturaleza: {cuenta.naturaleza === 'D' ? 'Débito' : 'Crédito'}</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-            {cuenta.registraTercero && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                <Badge variant="outline" className="text-xs cursor-help">
-                  Tercero
-                </Badge>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Registra movimientos con terceros</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-            {cuenta.categoriaNivel && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Badge variant="outline" className="text-xs cursor-help">
-                    {cuenta.categoriaNivel}
-                  </Badge>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Categoría de nivel: {cuenta.categoriaNivel}</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </div>
-          {depth > 0 && (
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 hover:bg-accent"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log("Editar cuenta", cuenta.codigo);
-                }}
-                data-testid={`button-edit-${cuenta.id}`}
-              >
-                <Edit className="h-3 w-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-destructive hover:bg-destructive/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log("Eliminar cuenta", cuenta.codigo);
-                }}
-                data-testid={`button-delete-${cuenta.id}`}
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
-        </div>
-        {hasChildren && isExpanded && (
-          <div className="relative">
-            {/* Línea vertical continua para hijos */}
-            <div
-              className="absolute left-0 top-0 w-px bg-border"
-              style={{
-                left: `${paddingLeft + 12}px`,
-                height: '100%'
-              }}
-            />
-            {cuenta.hijos!.map((hijo, index) =>
-              renderCuenta(hijo, depth + 1, index === cuenta.hijos!.length - 1, isExpanded)
-            )}
-          </div>
-        )}
-      </div>
-    );
+  const handleCreate = (parent: Cuenta | null) => {
+    console.log("Crear subcuenta para:", parent ? parent.codigo : "raíz");
+    // TODO: Implementar modal o navegación para crear cuenta
+  };
+
+  const handleEdit = (cuenta: Cuenta) => {
+    console.log("Editar cuenta:", cuenta.codigo);
+    // TODO: Implementar modal o navegación para editar cuenta
+  };
+
+  const handleDelete = (cuenta: Cuenta) => {
+    if (confirm(`¿Eliminar la cuenta ${cuenta.codigo} - ${cuenta.nombre}?`)) {
+      console.log("Eliminar cuenta:", cuenta.codigo);
+      // TODO: Implementar eliminación
+    }
   };
 
   return (
     <TooltipProvider>
       <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold">Plan de Cuentas</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Estructura contable jerárquica de la copropiedad
-          </p>
-        </div>
-        <Button data-testid="button-nueva-cuenta" onClick={() => console.log("Nueva cuenta")}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nueva Cuenta
-        </Button>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar por código o nombre..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-              data-testid="input-search-cuentas"
-            />
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold">Plan de Cuentas</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Estructura contable jerárquica de la copropiedad
+            </p>
           </div>
-        </CardHeader>
-        <CardContent>
-          {loading && (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin mr-2" />
-              <span>Cargando plan de cuentas...</span>
-            </div>
-          )}
+          <Button onClick={() => handleCreate(null)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nueva Cuenta
+          </Button>
+        </div>
 
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                {error}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="ml-2"
-                  onClick={refetch}
-                >
-                  Reintentar
-                </Button>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {!loading && !error && displayCuentas.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              {searchTerm ? "No se encontraron cuentas que coincidan con la búsqueda." : "No hay cuentas en el plan contable."}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por código o nombre..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={expandAll}>
+                      <Expand className="h-4 w-4 mr-1" />
+                      Expandir todo
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Expandir todos los nodos</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={collapseAll}>
+                      <ChevronUp className="h-4 w-4 mr-1" />
+                      Colapsar todo
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Colapsar todos los nodos</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
-          )}
+          </CardHeader>
+          <CardContent>
+            {loading && (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                <span>Cargando plan de cuentas...</span>
+              </div>
+            )}
 
-          {!loading && !error && displayCuentas.length > 0 && (
-            <div className="space-y-1">
-              {displayCuentas.map((cuenta) => renderCuenta(cuenta))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {error}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-2"
+                    onClick={refetch}
+                  >
+                    Reintentar
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {!loading && !error && displayCuentas.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                {searchTerm ? "No se encontraron cuentas que coincidan con la búsqueda." : "No hay cuentas en el plan contable."}
+              </div>
+            )}
+
+            {!loading && !error && displayCuentas.length > 0 && (
+              <div className="space-y-1">
+                {displayCuentas.map((cuenta) => (
+                  <CuentaNode
+                    key={cuenta.id}
+                    cuenta={cuenta}
+                    depth={0}
+                    expandedItems={expandedItems}
+                    onToggle={toggleExpanded}
+                    onCreate={handleCreate}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </TooltipProvider>
   );
 }
